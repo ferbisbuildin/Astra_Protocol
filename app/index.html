@@ -1141,6 +1141,12 @@
 </head>
 
 <body>
+  <!-- Notice when opened as raw local file:/// where extensions are blocked by Chromium -->
+  <div id="fileProtocolBanner" style="display: none; background: linear-gradient(90deg, #7c2d12, #991b1b); color: #fff; padding: 10px 16px; font-size: 13px; text-align: center; border-bottom: 1px solid rgba(255,255,255,0.15); z-index: 10000; position: relative;">
+    <span>⚠️ <strong>Local File Mode Detected:</strong> Web3 extensions (MetaMask, Phantom) cannot inject into local <code>file://</code> URLs by default.</span>
+    <a href="http://localhost:4000/app/" style="margin-left: 10px; color: #fef08a; font-weight: 700; text-decoration: underline;">Switch to http://localhost:4000/app/</a>
+  </div>
+
   <!-- Top Navigation Header -->
   <header class="app-nav">
     <a href="../index.html" class="nav-brand">
@@ -2472,26 +2478,78 @@ console.log(<span style="color: #34d399;">'Premium Due:'</span>, quote.totalDue,
       }
     }
 
+    // EIP-6963 Multi-Injected Provider Discovery (MetaMask, Rabby, Coinbase, Phantom, etc.)
+    const eip6963Providers = new Map();
+    if (typeof window !== 'undefined') {
+      window.addEventListener('eip6963:announceProvider', (event) => {
+        if (event && event.detail && event.detail.info && event.detail.provider) {
+          const info = event.detail.info;
+          if (info.rdns) eip6963Providers.set(info.rdns.toLowerCase(), event.detail);
+          if (info.name) eip6963Providers.set(info.name.toLowerCase(), event.detail);
+          updateWalletExtensionBadges();
+        }
+      });
+      window.dispatchEvent(new Event('eip6963:requestProvider'));
+      window.addEventListener('load', () => {
+        window.dispatchEvent(new Event('eip6963:requestProvider'));
+        updateWalletExtensionBadges();
+        if (window.location.protocol === 'file:') {
+          const banner = document.getElementById('fileProtocolBanner');
+          if (banner) banner.style.display = 'block';
+        }
+      });
+    }
+
     // Real Wallet Provider Getters
     function getPhantomProvider() {
       if (typeof window === 'undefined') return null;
-      if (window.phantom?.solana?.isPhantom) return window.phantom.solana;
-      if (window.solana?.isPhantom) return window.solana;
+      // 1. Dedicated Phantom window object
+      if (window.phantom?.solana) return window.phantom.solana;
+      // 2. Standard Solana window object (Phantom or any installed Solana extension)
+      if (window.solana) return window.solana;
+      // 3. EIP-6963 announced Phantom
+      if (eip6963Providers.has('app.phantom')) return eip6963Providers.get('app.phantom').provider;
+      if (eip6963Providers.has('phantom')) return eip6963Providers.get('phantom').provider;
+      for (const [key, val] of eip6963Providers.entries()) {
+        if (key.includes('phantom') || (val.info && val.info.name && val.info.name.toLowerCase().includes('phantom'))) {
+          return val.provider;
+        }
+      }
       return null;
     }
 
     function getMetaMaskProvider() {
-      if (typeof window === 'undefined' || typeof window.ethereum === 'undefined') return null;
-      if (window.ethereum.providers && Array.isArray(window.ethereum.providers)) {
-        const mm = window.ethereum.providers.find(p => p.isMetaMask);
-        if (mm) return mm;
+      if (typeof window === 'undefined') return null;
+      // 1. EIP-6963 announced MetaMask
+      if (eip6963Providers.has('io.metamask')) return eip6963Providers.get('io.metamask').provider;
+      if (eip6963Providers.has('metamask')) return eip6963Providers.get('metamask').provider;
+      for (const [key, val] of eip6963Providers.entries()) {
+        if (key.includes('metamask') || (val.info && val.info.name && val.info.name.toLowerCase().includes('metamask'))) {
+          return val.provider;
+        }
       }
-      if (window.ethereum.isMetaMask) return window.ethereum;
-      return window.ethereum;
+      // 2. Multi-provider array in window.ethereum
+      if (typeof window.ethereum !== 'undefined') {
+        if (window.ethereum.providers && Array.isArray(window.ethereum.providers)) {
+          const mm = window.ethereum.providers.find(p => p.isMetaMask);
+          if (mm) return mm;
+          return window.ethereum.providers[0];
+        }
+        if (window.ethereum.isMetaMask) return window.ethereum;
+        return window.ethereum;
+      }
+      return null;
     }
 
     function getCoinbaseProvider() {
       if (typeof window === 'undefined') return null;
+      if (eip6963Providers.has('com.coinbase.wallet')) return eip6963Providers.get('com.coinbase.wallet').provider;
+      if (eip6963Providers.has('coinbase')) return eip6963Providers.get('coinbase').provider;
+      for (const [key, val] of eip6963Providers.entries()) {
+        if (key.includes('coinbase') || (val.info && val.info.name && val.info.name.toLowerCase().includes('coinbase'))) {
+          return val.provider;
+        }
+      }
       if (window.coinbaseWalletExtension) return window.coinbaseWalletExtension;
       if (window.ethereum?.isCoinbaseWallet) return window.ethereum;
       if (window.ethereum?.providers && Array.isArray(window.ethereum.providers)) {
@@ -2503,6 +2561,13 @@ console.log(<span style="color: #34d399;">'Premium Due:'</span>, quote.totalDue,
 
     function getRabbyProvider() {
       if (typeof window === 'undefined') return null;
+      if (eip6963Providers.has('io.rabby')) return eip6963Providers.get('io.rabby').provider;
+      if (eip6963Providers.has('rabby')) return eip6963Providers.get('rabby').provider;
+      for (const [key, val] of eip6963Providers.entries()) {
+        if (key.includes('rabby') || (val.info && val.info.name && val.info.name.toLowerCase().includes('rabby'))) {
+          return val.provider;
+        }
+      }
       if (window.rabby) return window.rabby;
       if (window.ethereum?.isRabby) return window.ethereum;
       if (window.ethereum?.providers && Array.isArray(window.ethereum.providers)) {
@@ -2540,6 +2605,7 @@ console.log(<span style="color: #34d399;">'Premium Due:'</span>, quote.totalDue,
     }
 
     function openWalletModal() {
+      window.dispatchEvent(new Event('eip6963:requestProvider'));
       updateWalletExtensionBadges();
       if (walletModal) walletModal.classList.add('open');
     }
@@ -2600,17 +2666,28 @@ console.log(<span style="color: #34d399;">'Premium Due:'</span>, quote.totalDue,
     const optPhantom = document.getElementById('optPhantom');
     if (optPhantom) {
       optPhantom.addEventListener('click', async () => {
-        const phantom = getPhantomProvider();
+        let phantom = getPhantomProvider();
         if (!phantom) {
-          showToast(
-            'Phantom Wallet Required',
-            'Phantom extension is not detected in your browser. Install Phantom from phantom.app or use the Instant Testnet Keypair below.',
-            'https://phantom.app/'
-          );
-          window.open('https://phantom.app/', '_blank');
-          return;
+          window.dispatchEvent(new Event('eip6963:requestProvider'));
+          await new Promise(r => setTimeout(r, 180));
+          phantom = getPhantomProvider();
         }
+
+        if (!phantom) {
+          if (window.location.protocol === 'file:') {
+            return showToast(
+              'Browser Extension Blocked',
+              'You are viewing via local file://. Chrome blocks extensions on file URLs. Please open http://localhost:4000/app/ in your browser URL bar.'
+            );
+          }
+          return showToast(
+            'Phantom Not Detected',
+            'Phantom extension was not found. Please ensure your Phantom extension is enabled in your browser, or use the Instant Testnet Keypair.'
+          );
+        }
+
         try {
+          showToast('Connecting Phantom', 'Please approve the connection prompt in your Phantom extension...');
           const resp = await phantom.connect();
           const pubkey = resp.publicKey ? resp.publicKey.toString() : phantom.publicKey.toString();
           activeSolanaProvider = phantom;
@@ -2625,7 +2702,7 @@ console.log(<span style="color: #34d399;">'Premium Due:'</span>, quote.totalDue,
           phantom.on('disconnect', () => disconnectWallet());
         } catch (e) {
           console.warn('Phantom connection notice:', e);
-          showToast('Phantom Connection Notice', e.message || 'Connection request cancelled.');
+          showToast('Phantom Notice', e.message || 'Connection request cancelled.');
         }
       });
     }
@@ -2634,17 +2711,28 @@ console.log(<span style="color: #34d399;">'Premium Due:'</span>, quote.totalDue,
     const optMetaMask = document.getElementById('optMetaMask');
     if (optMetaMask) {
       optMetaMask.addEventListener('click', async () => {
-        const mm = getMetaMaskProvider();
+        let mm = getMetaMaskProvider();
         if (!mm) {
-          showToast(
-            'MetaMask Required',
-            'MetaMask extension is not detected in your browser. Install MetaMask from metamask.io.',
-            'https://metamask.io/download/'
-          );
-          window.open('https://metamask.io/download/', '_blank');
-          return;
+          window.dispatchEvent(new Event('eip6963:requestProvider'));
+          await new Promise(r => setTimeout(r, 180));
+          mm = getMetaMaskProvider();
         }
+
+        if (!mm) {
+          if (window.location.protocol === 'file:') {
+            return showToast(
+              'Browser Extension Blocked',
+              'You are viewing via local file://. Chrome blocks extensions on file URLs. Please open http://localhost:4000/app/ in your browser URL bar.'
+            );
+          }
+          return showToast(
+            'MetaMask Not Detected',
+            'MetaMask extension was not found. Please ensure MetaMask is enabled in your browser, or use the Instant Testnet Keypair.'
+          );
+        }
+
         try {
+          showToast('Connecting MetaMask', 'Please approve the connection prompt in your MetaMask extension...');
           const accounts = await mm.request({ method: 'eth_requestAccounts' });
           if (!accounts || !accounts.length) throw new Error('No accounts authorized');
           const userAddr = accounts[0];
@@ -2681,7 +2769,7 @@ console.log(<span style="color: #34d399;">'Premium Due:'</span>, quote.totalDue,
           });
         } catch (e) {
           console.warn('MetaMask connection notice:', e);
-          showToast('MetaMask Connection Notice', e.message || 'Connection request cancelled.');
+          showToast('MetaMask Notice', e.message || 'Connection request cancelled.');
         }
       });
     }
@@ -2690,17 +2778,28 @@ console.log(<span style="color: #34d399;">'Premium Due:'</span>, quote.totalDue,
     const optCoinbase = document.getElementById('optCoinbase');
     if (optCoinbase) {
       optCoinbase.addEventListener('click', async () => {
-        const cb = getCoinbaseProvider();
+        let cb = getCoinbaseProvider();
         if (!cb) {
-          showToast(
-            'Coinbase Wallet Required',
-            'Coinbase Wallet extension not found. Opening coinbase.com/wallet...',
-            'https://www.coinbase.com/wallet'
-          );
-          window.open('https://www.coinbase.com/wallet', '_blank');
-          return;
+          window.dispatchEvent(new Event('eip6963:requestProvider'));
+          await new Promise(r => setTimeout(r, 180));
+          cb = getCoinbaseProvider();
         }
+
+        if (!cb) {
+          if (window.location.protocol === 'file:') {
+            return showToast(
+              'Browser Extension Blocked',
+              'You are viewing via local file://. Chrome blocks extensions on file URLs. Please open http://localhost:4000/app/ in your browser URL bar.'
+            );
+          }
+          return showToast(
+            'Coinbase Not Detected',
+            'Coinbase Wallet extension was not found. Please ensure it is enabled in your browser, or use the Instant Testnet Keypair.'
+          );
+        }
+
         try {
+          showToast('Connecting Coinbase', 'Please approve the connection prompt in your Coinbase extension...');
           const accounts = await cb.request({ method: 'eth_requestAccounts' });
           if (!accounts || !accounts.length) throw new Error('No accounts authorized');
           activeEthereumProvider = cb;
@@ -2709,7 +2808,7 @@ console.log(<span style="color: #34d399;">'Premium Due:'</span>, quote.totalDue,
           await setWalletConnected(accounts[0], 'coinbase');
         } catch (e) {
           console.warn('Coinbase connection notice:', e);
-          showToast('Coinbase Connection Notice', e.message || 'Connection request cancelled.');
+          showToast('Coinbase Notice', e.message || 'Connection request cancelled.');
         }
       });
     }
@@ -2718,17 +2817,28 @@ console.log(<span style="color: #34d399;">'Premium Due:'</span>, quote.totalDue,
     const optRabby = document.getElementById('optRabby');
     if (optRabby) {
       optRabby.addEventListener('click', async () => {
-        const rb = getRabbyProvider();
+        let rb = getRabbyProvider();
         if (!rb) {
-          showToast(
-            'Rabby Wallet Required',
-            'Rabby Wallet extension not found. Opening rabby.io...',
-            'https://rabby.io/'
-          );
-          window.open('https://rabby.io/', '_blank');
-          return;
+          window.dispatchEvent(new Event('eip6963:requestProvider'));
+          await new Promise(r => setTimeout(r, 180));
+          rb = getRabbyProvider();
         }
+
+        if (!rb) {
+          if (window.location.protocol === 'file:') {
+            return showToast(
+              'Browser Extension Blocked',
+              'You are viewing via local file://. Chrome blocks extensions on file URLs. Please open http://localhost:4000/app/ in your browser URL bar.'
+            );
+          }
+          return showToast(
+            'Rabby Not Detected',
+            'Rabby Wallet extension was not found. Please ensure it is enabled in your browser, or use the Instant Testnet Keypair.'
+          );
+        }
+
         try {
+          showToast('Connecting Rabby', 'Please approve the connection prompt in your Rabby extension...');
           const accounts = await rb.request({ method: 'eth_requestAccounts' });
           if (!accounts || !accounts.length) throw new Error('No accounts authorized');
           activeEthereumProvider = rb;
@@ -2737,7 +2847,7 @@ console.log(<span style="color: #34d399;">'Premium Due:'</span>, quote.totalDue,
           await setWalletConnected(accounts[0], 'rabby');
         } catch (e) {
           console.warn('Rabby connection notice:', e);
-          showToast('Rabby Connection Notice', e.message || 'Connection request cancelled.');
+          showToast('Rabby Notice', e.message || 'Connection request cancelled.');
         }
       });
     }
