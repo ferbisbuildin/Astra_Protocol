@@ -1,7 +1,7 @@
 /**
  * Astra Protocol — Comprehensive Backend Deep Test Suite
  * Tests all REST APIs, Oracle aggregators, Pyth Douro Labs streams,
- * Quoting algebra, Positions, Invoices, ZK Receipts, and Usernames.
+ * Quoting algebra, Positions, Invoices, ZK Receipts, Reserves & Security Protections.
  */
 
 import http from 'http';
@@ -129,7 +129,7 @@ async function runTests() {
       owner: 'GBoQWwa5SWsAFcRh1NQhWQ3Avmvwgsms6MmF2jg3Verk',
     });
 
-    if (createRes.status === 200 && createRes.body && createRes.body.id) {
+    if ((createRes.status === 200 || createRes.status === 201) && createRes.body && createRes.body.id) {
       positionId = createRes.body.id;
       logPass(`Created position ${positionId} on Solana (Status: ${createRes.body.status})`);
     } else {
@@ -141,9 +141,9 @@ async function runTests() {
 
   if (positionId) {
     try {
-      // Settle position
-      const settleRes = await request('POST', `/api/v1/positions/${positionId}/settle`);
-      if (settleRes.status === 200 && settleRes.body && settleRes.body.status) {
+      // Settle position with simulated loss so it enters Claimable state
+      const settleRes = await request('POST', `/api/v1/positions/${positionId}/settle`, { testnetSimulateLoss: true });
+      if (settleRes.status === 200 && settleRes.body && settleRes.body.status === 'Claimable') {
         logPass(`Settled position ${positionId} -> Result: ${settleRes.body.status} (Settlement Price: $${settleRes.body.settlementPrice}, Payout: $${settleRes.body.claimablePayout} USDC)`);
       } else {
         logFail(`Position settlement unexpected state`, settleRes.body);
@@ -172,7 +172,7 @@ async function runTests() {
       durationSeconds: 3600,
       chain: 'arbitrum',
     });
-    if (invRes.status === 200 && invRes.body && invRes.body.token) {
+    if ((invRes.status === 200 || invRes.status === 201) && invRes.body && invRes.body.token) {
       invoiceToken = invRes.body.token;
       logPass(`Generated invoice ${invoiceToken} for 1.5 ETH (Hash: ${invRes.body.invoiceHash.slice(0, 16)}...)`);
     } else {
@@ -258,6 +258,67 @@ async function runTests() {
     }
   } catch (e) {
     logFail('Documentation routes request error', e);
+  }
+
+  // 9. Security Audit: Double-Claim Rejection
+  console.log('\n[9] Testing Security Protection: Double-Claim Rejection...');
+  try {
+    const doubleClaimRes = await request('POST', `/api/v1/positions/${positionId}/claim`);
+    if (doubleClaimRes.status === 400 && doubleClaimRes.body.error && doubleClaimRes.body.error.includes('Double-claim rejected')) {
+      logPass('Double-claim attack successfully prevented with HTTP 400 rejection');
+    } else {
+      logFail('Double-claim was not blocked properly', doubleClaimRes.body);
+    }
+  } catch (e) {
+    logFail('Double-claim test error', e);
+  }
+
+  // 10. Security Audit: Double-Payment Rejection
+  console.log('\n[10] Testing Security Protection: Double-Payment Rejection...');
+  try {
+    const doublePayRes = await request('POST', `/api/v1/invoices/${invoiceToken}/pay`, { payer: 'attacker' });
+    if (doublePayRes.status === 400 && doublePayRes.body.error && doublePayRes.body.error.includes('Double-payment rejected')) {
+      logPass('Double-payment attack successfully prevented with HTTP 400 rejection');
+    } else {
+      logFail('Double-payment was not blocked properly', doublePayRes.body);
+    }
+  } catch (e) {
+    logFail('Double-payment test error', e);
+  }
+
+  // 11. Reserve Vault: Deposit & State
+  console.log('\n[11] Testing Reserve Pool Liquidity & LP Minting...');
+  const testUser = 'test_lp_' + Math.floor(Math.random() * 100000);
+  try {
+    const depRes = await request('POST', '/api/v1/reserves/deposit', { amount: 1500, user: testUser });
+    if (depRes.status === 200 && depRes.body.success && depRes.body.mintedShares === 1500) {
+      logPass(`Deposited 1,500 USDC -> Minted 1,500 Astra-LP shares (Tx: ${depRes.body.txHash.slice(0, 16)}...)`);
+    } else {
+      logFail('Reserve deposit failed', depRes.body);
+    }
+
+    const stateRes = await request('GET', `/api/v1/reserves/state?user=${testUser}`);
+    if (stateRes.status === 200 && stateRes.body.userShares === 1500) {
+      logPass(`Reserve pool state verified: ${stateRes.body.userShares} LP shares, APY ${stateRes.body.apy}`);
+    } else {
+      logFail('Reserve state check failed', stateRes.body);
+    }
+  } catch (e) {
+    logFail('Reserve test error', e);
+  }
+
+  // 12. Security Audit: Input Sanitization & Prototype Pollution
+  console.log('\n[12] Testing Username Input Sanitization & Prototype Pollution...');
+  try {
+    const protoRes = await request('POST', '/api/v1/usernames/register', { handle: '__proto__', walletAddress: '0x123456789012' });
+    const xssRes = await request('POST', '/api/v1/usernames/register', { handle: '<script>', walletAddress: '0x123456789012' });
+    if (protoRes.status === 400 && xssRes.status === 400) {
+      logPass('Prototype pollution & XSS handle injections strictly blocked with HTTP 400');
+    } else {
+      logFail('Security vulnerability: malicious handle accepted', { protoRes, xssRes });
+    }
+  } catch (e) {
+    logFail('Sanitization test error', e);
   }
 
   // Summary

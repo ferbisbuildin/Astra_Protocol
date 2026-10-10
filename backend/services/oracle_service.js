@@ -67,27 +67,7 @@ class OracleService {
     const feedId = pythFeedMap[symbol.toUpperCase()];
     if (!feedId) return null;
 
-    try {
-      const res = await fetch(`https://hermes.pyth.network/v2/updates/price/latest?ids[]=${feedId}`);
-      if (!res.ok) throw new Error(`Pyth HTTP ${res.status}`);
-      const data = await res.json();
-      if (data && data.parsed && data.parsed.length > 0) {
-        const item = data.parsed[0];
-        const raw = Number(item.price.price);
-        const expo = Number(item.price.expo);
-        const price = raw * Math.pow(10, expo);
-        return {
-          price,
-          scaledPrice: Math.round(price * config.protocol.priceScale),
-          source: 'Pyth-Hermes-L1',
-          conf: Number(item.price.conf) * Math.pow(10, expo),
-          publishTime: item.price.publish_time,
-          timestamp: Date.now(),
-        };
-      }
-    } catch (e) {
-      console.warn(`[Oracle] Pyth Hermes fetch failed for ${symbol}:`, e.message);
-    }
+
     return null;
   }
 
