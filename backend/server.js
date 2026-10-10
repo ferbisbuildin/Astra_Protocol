@@ -55,6 +55,11 @@ app.get(['/docs', '/developers'], (req, res) => {
   res.sendFile(path.join(__dirname, '../docs.html'));
 });
 
+// Dedicated App & Dashboard Routes
+app.get(['/app', '/dashboard'], (req, res) => {
+  res.sendFile(path.join(__dirname, '../app/index.html'));
+});
+
 // In-memory data structures with seed data
 const mockPositions = new Map();
 const invoices = new Map();
