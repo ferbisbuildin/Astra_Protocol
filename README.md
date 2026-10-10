@@ -81,13 +81,6 @@ Astra/
 │       ├── oracle_service.js    # Oracle aggregation (Pyth, Chainlink, Hyperliquid)
 │       ├── settlement_keeper.js # Automated settlement bot
 │       └── receipt_service.js   # Cryptographic payment receipts
-├── coverfi/                     # Cloned upstream CoverFi reference repositories
-│   ├── coverfi-contracts/
-│   ├── CoverFi-backend/
-│   ├── CoverFI-logic-pages/
-│   ├── Coverfi-landing/
-│   ├── coverfi-docs/
-│   └── coverfi-research/
 └── README.md
 ```
 
