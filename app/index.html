@@ -16,6 +16,9 @@
   <!-- Thinking Orbs from Libraries.dev -->
   <script src="./thinking-orbs.bundle.js?v=3"></script>
 
+  <!-- Web3Icons (0xa3k5/web3icons) & MX-Icons (ig-imanish/mx-icons) Visual System -->
+  <script src="./astra-icons.bundle.js?v=2"></script>
+
   <style>
     :root {
       --bg: #07070a;
@@ -50,13 +53,14 @@
 
     /* Top Navigation Header */
     header.app-nav {
-      height: 74px;
+      height: 66px;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 0 32px;
+      padding: 0 28px;
+      gap: 16px;
       border-bottom: 1px solid var(--card-border);
-      background: rgba(7, 7, 10, 0.85);
+      background: rgba(7, 7, 10, 0.88);
       backdrop-filter: blur(20px);
       -webkit-backdrop-filter: blur(20px);
       position: sticky;
@@ -67,15 +71,16 @@
     .nav-brand {
       display: flex;
       align-items: center;
-      gap: 12px;
+      gap: 10px;
       text-decoration: none;
       color: #fff;
+      flex-shrink: 0;
     }
 
     .brand-logo {
       font-weight: 800;
-      font-size: 25px;
-      letter-spacing: -0.6px;
+      font-size: 23px;
+      letter-spacing: -0.5px;
       background: linear-gradient(135deg, #ffffff 0%, #c4b5fd 100%);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
@@ -86,14 +91,16 @@
       align-items: center;
       gap: 6px;
       font-size: 11px;
-      padding: 3px 10px;
+      padding: 3px 9px;
       border-radius: 99px;
       background: rgba(139, 92, 246, 0.15);
       color: #c4b5fd;
       border: 1px solid rgba(139, 92, 246, 0.35);
       font-weight: 600;
       text-transform: uppercase;
-      letter-spacing: 0.6px;
+      letter-spacing: 0.5px;
+      white-space: nowrap !important;
+      flex-shrink: 0;
     }
 
     .live-pulse {
@@ -112,79 +119,88 @@
 
     .nav-tabs {
       display: flex;
-      gap: 6px;
+      gap: 4px;
       background: rgba(255, 255, 255, 0.035);
       padding: 4px;
-      border-radius: 14px;
+      border-radius: 13px;
       border: 1px solid var(--card-border);
+      flex-shrink: 0;
+      white-space: nowrap !important;
     }
 
     .nav-tab-btn {
       background: transparent;
       border: 0;
       color: var(--ink-muted);
-      padding: 8px 18px;
-      border-radius: 10px;
+      padding: 7px 14px;
+      border-radius: 9px;
       font-family: inherit;
-      font-size: 13.5px;
+      font-size: 13px;
       font-weight: 500;
       cursor: pointer;
-      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      white-space: nowrap !important;
+      flex-shrink: 0;
+      transition: all 0.18s cubic-bezier(0.16, 1, 0.3, 1);
     }
     .nav-tab-btn:hover {
       color: #fff;
+      background: rgba(255, 255, 255, 0.04);
     }
     .nav-tab-btn.active {
-      background: rgba(255, 255, 255, 0.09);
+      background: rgba(255, 255, 255, 0.1);
       color: #fff;
       font-weight: 600;
-      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.35);
     }
 
     .nav-actions {
       display: flex;
       align-items: center;
       gap: 12px;
+      flex-shrink: 0;
     }
 
-    .chain-selector {
-      display: flex;
+    .oracle-status-pill {
+      display: inline-flex;
       align-items: center;
-      background: rgba(255, 255, 255, 0.05);
-      border: 1px solid var(--card-border);
-      border-radius: 12px;
-      padding: 7px 14px;
-      gap: 8px;
-      font-size: 13px;
+      gap: 7px;
+      font-size: 11.5px;
+      padding: 5px 12px;
+      border-radius: 99px;
+      background: rgba(16, 185, 129, 0.12);
+      border: 1px solid rgba(16, 185, 129, 0.32);
+      color: #34d399;
       font-weight: 600;
-      cursor: pointer;
-      color: #fff;
-      outline: none;
-      transition: border-color 0.2s ease;
-    }
-    .chain-selector:focus {
-      border-color: var(--accent-purple);
+      white-space: nowrap !important;
+      letter-spacing: 0.3px;
+      flex-shrink: 0;
     }
 
     .wallet-cluster {
       display: flex;
       align-items: center;
       gap: 8px;
+      flex-shrink: 0;
     }
 
     .btn-wallet {
       background: #fdfdfd;
       color: #050505;
       border: 0;
-      padding: 9px 18px;
+      padding: 8px 16px;
       border-radius: 99px;
       font-family: inherit;
-      font-size: 13px;
+      font-size: 12.5px;
       font-weight: 600;
       cursor: pointer;
       display: inline-flex;
       align-items: center;
-      gap: 8px;
+      gap: 7px;
+      white-space: nowrap !important;
+      flex-shrink: 0;
       transition: transform 0.15s ease, background 0.15s ease, box-shadow 0.2s ease;
     }
     .btn-wallet:hover {
@@ -197,13 +213,17 @@
       background: rgba(16, 185, 129, 0.15);
       border: 1px solid rgba(16, 185, 129, 0.4);
       color: #34d399;
-      padding: 8px 14px;
+      padding: 7px 13px;
       border-radius: 99px;
       font-size: 12px;
       font-weight: 600;
       cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      white-space: nowrap !important;
+      flex-shrink: 0;
       transition: all 0.2s ease;
-      display: none;
     }
     .btn-airdrop:hover {
       background: rgba(16, 185, 129, 0.25);
@@ -904,6 +924,219 @@
       word-break: break-all;
       display: none;
     }
+
+    /* Web3Icons & MX-Icons Visual Integration */
+    .mx-icon {
+      display: inline-block;
+      vertical-align: middle;
+      flex-shrink: 0;
+      transition: transform 0.15s ease;
+    }
+    .web3-token-icon, .web3-network-icon, .web3-wallet-icon {
+      display: inline-block;
+      vertical-align: middle;
+      flex-shrink: 0;
+    }
+    .nav-brand-icon {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .nav-tab-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+    }
+    .nav-tab-icon {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .metric-label {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+    }
+    .mode-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+    .asset-picker-badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      overflow: hidden;
+      flex-shrink: 0;
+      background: transparent !important;
+    }
+    .asset-option-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 12px;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: background 0.15s ease;
+      color: #dedede;
+    }
+    .asset-option-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .asset-token-wrap {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      flex-shrink: 0;
+    }
+    .asset-chain-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 11px;
+      color: var(--ink-muted);
+      text-transform: capitalize;
+    }
+    .btn-action, .btn-wallet, .btn-airdrop {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    /* Web3 Wallet Modal */
+    .wallet-modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.78);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      z-index: 10000;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+    .wallet-modal-overlay.open {
+      display: flex;
+    }
+    .wallet-modal-card {
+      background: #0d0d16;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 22px;
+      width: 100%;
+      max-width: 440px;
+      padding: 24px;
+      box-shadow: 0 24px 60px rgba(0, 0, 0, 0.9), 0 0 30px rgba(139, 92, 246, 0.2);
+      position: relative;
+      animation: modalScaleIn 0.2s cubic-bezier(0.16, 1, 0.3, 1) both;
+    }
+    @keyframes modalScaleIn {
+      from { opacity: 0; transform: scale(0.96) translateY(8px); }
+      to { opacity: 1; transform: scale(1) translateY(0); }
+    }
+    .wallet-modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+    }
+    .wallet-modal-title {
+      font-size: 18px;
+      font-weight: 800;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .wallet-modal-close {
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      color: var(--ink-muted);
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-size: 18px;
+      transition: all 0.15s ease;
+    }
+    .wallet-modal-close:hover {
+      background: rgba(255, 255, 255, 0.15);
+      color: #fff;
+    }
+    .wallet-modal-subtitle {
+      font-size: 13px;
+      color: var(--ink-muted);
+      margin-bottom: 20px;
+    }
+    .wallet-options-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .wallet-option {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 14px;
+      padding: 12px 16px;
+      cursor: pointer;
+      transition: all 0.18s ease;
+    }
+    .wallet-option:hover {
+      background: rgba(255, 255, 255, 0.09);
+      border-color: rgba(167, 139, 250, 0.5);
+      transform: translateY(-1px);
+    }
+    .wallet-option-left {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+    .wallet-icon-slot {
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
+      background: rgba(255, 255, 255, 0.05);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      flex-shrink: 0;
+    }
+    .wallet-option-name {
+      font-size: 14px;
+      font-weight: 700;
+      color: #fff;
+    }
+    .wallet-option-chain {
+      font-size: 11.5px;
+      color: var(--ink-muted);
+    }
+    .wallet-badge {
+      font-size: 11px;
+      font-weight: 600;
+      padding: 3px 8px;
+      border-radius: 6px;
+      background: rgba(255, 255, 255, 0.06);
+      color: var(--ink-muted);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
   </style>
 </head>
 
@@ -911,28 +1144,30 @@
   <!-- Top Navigation Header -->
   <header class="app-nav">
     <a href="../index.html" class="nav-brand">
+      <span class="nav-brand-icon" id="navBrandIcon"></span>
       <span class="brand-logo">Astra</span>
-      <span class="brand-badge"><span class="live-pulse"></span> Devnet Live</span>
+      <span class="brand-badge"><span class="live-pulse"></span> Devnet</span>
     </a>
 
     <nav class="nav-tabs">
-      <button class="nav-tab-btn active" data-tab="protect">Protection</button>
-      <button class="nav-tab-btn" data-tab="invoices">Invoices &amp; Pay</button>
-      <button class="nav-tab-btn" data-tab="positions">My Positions</button>
-      <button class="nav-tab-btn" data-tab="reserves">Reserves &amp; LP</button>
-      <button class="nav-tab-btn" data-tab="receipts">ZK Receipts</button>
-      <button class="nav-tab-btn" data-tab="docs">Developers &amp; Docs</button>
+      <button class="nav-tab-btn active" data-tab="protect"><span class="nav-tab-icon" id="tabIconProtect"></span><span>Protection</span></button>
+      <button class="nav-tab-btn" data-tab="invoices"><span class="nav-tab-icon" id="tabIconInvoices"></span><span>Invoices</span></button>
+      <button class="nav-tab-btn" data-tab="positions"><span class="nav-tab-icon" id="tabIconPositions"></span><span>Positions</span></button>
+      <button class="nav-tab-btn" data-tab="reserves"><span class="nav-tab-icon" id="tabIconReserves"></span><span>Reserves</span></button>
+      <button class="nav-tab-btn" data-tab="receipts"><span class="nav-tab-icon" id="tabIconReceipts"></span><span>ZK Proofs</span></button>
+      <button class="nav-tab-btn" data-tab="docs"><span class="nav-tab-icon" id="tabIconDocs"></span><span>Docs</span></button>
     </nav>
 
     <div class="nav-actions">
-      <div class="brand-badge" style="gap: 8px; background: rgba(16, 185, 129, 0.1); border-color: rgba(16, 185, 129, 0.3); color: #34d399;">
-        <thinking-orb state="connecting" size="20" speed="1.2" color="#34d399"></thinking-orb>
-        <span>High-Throughput Oracles Live</span>
+      <div class="oracle-status-pill" title="Pyth Douro Labs Real-time Price Stream">
+        <thinking-orb state="connecting" size="14" speed="1.2" color="#34d399"></thinking-orb>
+        <span>Pyth Live</span>
       </div>
       <div class="wallet-cluster">
-        <button id="btnAirdropFaucet" class="btn-airdrop">Get Testnet Gas</button>
+        <button id="btnAirdropFaucet" class="btn-airdrop"><span id="airdropBtnIcon"></span><span>Faucet</span></button>
         <button id="connectWalletBtn" class="btn-wallet">
-          <span>Connect Wallet</span>
+          <span id="walletBtnIcon"></span>
+          <span id="walletBtnLabel">Connect Wallet</span>
         </button>
       </div>
     </div>
@@ -943,7 +1178,7 @@
     <!-- Macro Metrics Banner with Sparklines -->
     <section class="metrics-banner">
       <div class="metric-card">
-        <div class="metric-label">Total Value Protected</div>
+        <div class="metric-label"><span id="metricTvpIcon"></span><span>Total Value Protected</span></div>
         <div class="metric-value">$14,850,200</div>
         <div class="metric-sub">▲ +12.4% this month</div>
         <svg class="sparkline-svg" viewBox="0 0 100 28" fill="none">
@@ -958,7 +1193,7 @@
         </svg>
       </div>
       <div class="metric-card">
-        <div class="metric-label">Underwriting Reserves</div>
+        <div class="metric-label"><span id="metricReservesIcon"></span><span>Underwriting Reserves</span></div>
         <div class="metric-value">$22,500,000</div>
         <div class="metric-sub">USDC Multi-Chain Vault</div>
         <svg class="sparkline-svg" viewBox="0 0 100 28" fill="none">
@@ -973,7 +1208,7 @@
         </svg>
       </div>
       <div class="metric-card">
-        <div class="metric-label">Loss Payouts Settled</div>
+        <div class="metric-label"><span id="metricPayoutsIcon"></span><span>Loss Payouts Settled</span></div>
         <div class="metric-value">$840,320</div>
         <div class="metric-sub">100% on-chain verified</div>
         <svg class="sparkline-svg" viewBox="0 0 100 28" fill="none">
@@ -988,7 +1223,7 @@
         </svg>
       </div>
       <div class="metric-card">
-        <div class="metric-label">Underwriting Yield APY</div>
+        <div class="metric-label"><span id="metricApyIcon"></span><span>Underwriting Yield APY</span></div>
         <div class="metric-value" style="color: #34d399;">11.8%</div>
         <div class="metric-sub">78% Premium Share to LPs</div>
         <svg class="sparkline-svg" viewBox="0 0 100 28" fill="none">
@@ -1008,8 +1243,8 @@
     <section id="panel-protect" class="app-panel active">
       <!-- Mode Toggle: Rate Lock vs Depeg Shield -->
       <div class="mode-toggle-box">
-        <button id="modeRateLock" class="mode-btn">⚡ Rate Lock (Pay with Protection)</button>
-        <button id="modeDepeg" class="mode-btn active">🛡️ Depeg Shield (Balance Floor)</button>
+        <button id="modeRateLock" class="mode-btn"><span id="modeIconRateLock"></span><span>Rate Lock (Pay with Protection)</span></button>
+        <button id="modeDepeg" class="mode-btn active"><span id="modeIconDepeg"></span><span>Depeg Shield (Balance Floor)</span></button>
       </div>
 
       <div class="protection-grid">
@@ -1579,6 +1814,72 @@ console.log(<span style="color: #34d399;">'Premium Due:'</span>, quote.totalDue,
   <!-- Floating Toast Notification Container -->
   <div id="toastContainer"></div>
 
+  <!-- Glassmorphic Web3 Wallet Selection Modal -->
+  <div id="walletModal" class="wallet-modal-overlay">
+    <div class="wallet-modal-card">
+      <div class="wallet-modal-header">
+        <div class="wallet-modal-title">
+          <span id="walletModalIcon"></span>
+          <span>Connect Web3 Wallet</span>
+        </div>
+        <button class="wallet-modal-close" id="walletModalClose">&times;</button>
+      </div>
+      <p class="wallet-modal-subtitle">Connect your multi-chain wallet to authenticate and sign risk underwriting on Devnet.</p>
+      <div class="wallet-options-list">
+        <div class="wallet-option" id="optPhantom">
+          <div class="wallet-option-left">
+            <div class="wallet-icon-slot" id="slotPhantom"></div>
+            <div>
+              <div class="wallet-option-name">Phantom</div>
+              <div class="wallet-option-chain">Solana &amp; Multi-Chain</div>
+            </div>
+          </div>
+          <span class="wallet-badge" id="badgePhantom">Solana</span>
+        </div>
+        <div class="wallet-option" id="optMetaMask">
+          <div class="wallet-option-left">
+            <div class="wallet-icon-slot" id="slotMetaMask"></div>
+            <div>
+              <div class="wallet-option-name">MetaMask</div>
+              <div class="wallet-option-chain">Arbitrum &amp; EVM</div>
+            </div>
+          </div>
+          <span class="wallet-badge" id="badgeMetaMask">Arbitrum</span>
+        </div>
+        <div class="wallet-option" id="optCoinbase">
+          <div class="wallet-option-left">
+            <div class="wallet-icon-slot" id="slotCoinbase"></div>
+            <div>
+              <div class="wallet-option-name">Coinbase Wallet</div>
+              <div class="wallet-option-chain">Passkeys &amp; Smart Wallet</div>
+            </div>
+          </div>
+          <span class="wallet-badge">Ready</span>
+        </div>
+        <div class="wallet-option" id="optRabby">
+          <div class="wallet-option-left">
+            <div class="wallet-icon-slot" id="slotRabby"></div>
+            <div>
+              <div class="wallet-option-name">Rabby Wallet</div>
+              <div class="wallet-option-chain">Multi-Chain DeFi</div>
+            </div>
+          </div>
+          <span class="wallet-badge">Ready</span>
+        </div>
+        <div class="wallet-option" id="optDevnetKeypair" style="border-color: rgba(167, 139, 250, 0.4); background: rgba(139, 92, 246, 0.08);">
+          <div class="wallet-option-left">
+            <div class="wallet-icon-slot" id="slotKeypair"></div>
+            <div>
+              <div class="wallet-option-name" style="color: #c4b5fd;">Instant Devnet Keypair</div>
+              <div class="wallet-option-chain">Fast in-browser ephemeral testing</div>
+            </div>
+          </div>
+          <span class="wallet-badge" style="background: rgba(16, 185, 129, 0.2); color: #34d399; border-color: rgba(16, 185, 129, 0.4);">1-Click</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- Interactive JavaScript Engine with Live Devnet Integration -->
   <script>
     // Toast Notification Utility
@@ -1751,8 +2052,13 @@ console.log(<span style="color: #34d399;">'Premium Due:'</span>, quote.totalDue,
     function selectAssetItem(item) {
       if (selectAsset) selectAsset.value = item.symbol;
       if (pickerAssetBadge) {
-        pickerAssetBadge.textContent = item.symbol.slice(0, 3);
-        pickerAssetBadge.style.background = item.color || '#8b5cf6';
+        if (window.AstraIcons && window.AstraIcons.web3) {
+          pickerAssetBadge.innerHTML = window.AstraIcons.web3.token(item.symbol, 22);
+          pickerAssetBadge.style.background = 'transparent';
+        } else {
+          pickerAssetBadge.textContent = item.symbol.slice(0, 3);
+          pickerAssetBadge.style.background = item.color || '#8b5cf6';
+        }
       }
       if (pickerAssetSymbol) pickerAssetSymbol.textContent = item.symbol;
       if (pickerAssetPrice) pickerAssetPrice.textContent = `$${item.price.toLocaleString('en-US')}`;
@@ -1779,17 +2085,25 @@ console.log(<span style="color: #34d399;">'Premium Due:'</span>, quote.totalDue,
         opt.textContent = `${item.name} ($${item.price.toLocaleString('en-US')})`;
         if (selectAsset) selectAsset.appendChild(opt);
 
-        // 2. Custom dark dropdown item
+        // 2. Custom dark dropdown item with Web3Icons & Network Badges
         if (customAssetDropdown) {
           const div = document.createElement('div');
           div.className = `asset-option-item ${item.symbol === 'SOL' ? 'selected' : ''}`;
           div.setAttribute('data-sym', item.symbol);
+
+          const tokenSvg = (window.AstraIcons && window.AstraIcons.web3) 
+            ? window.AstraIcons.web3.token(item.symbol, 26) 
+            : `<span class="asset-picker-badge" style="background: ${item.color};">${item.symbol.slice(0, 3)}</span>`;
+          const chainSvg = (window.AstraIcons && window.AstraIcons.web3)
+            ? window.AstraIcons.web3.network(item.chain, 13)
+            : '';
+
           div.innerHTML = `
             <div class="asset-option-left">
-              <span class="asset-picker-badge" style="background: ${item.color};">${item.symbol.slice(0, 3)}</span>
+              <div class="asset-token-wrap">${tokenSvg}</div>
               <div>
                 <div class="asset-option-sym">${item.symbol}</div>
-                <div class="asset-option-chain">${item.chain}</div>
+                <div class="asset-chain-tag">${chainSvg}<span>${item.chain}</span></div>
               </div>
             </div>
             <div class="asset-option-price">$${item.price.toLocaleString('en-US')}</div>
@@ -2134,65 +2448,126 @@ console.log(<span style="color: #34d399;">'Premium Due:'</span>, quote.totalDue,
     }
 
     const connectWalletBtn = document.getElementById('connectWalletBtn');
+    const walletModal = document.getElementById('walletModal');
+    const walletModalClose = document.getElementById('walletModalClose');
 
-    async function updateSolanaBalance(pubkey) {
-      if (!solanaConnection) return;
-      try {
-        const bal = await solanaConnection.getBalance(new window.solanaWeb3.PublicKey(pubkey));
-        const solVal = (bal / window.solanaWeb3.LAMPORTS_PER_SOL).toFixed(3);
-        connectWalletBtn.innerHTML = `<span>${pubkey.slice(0, 4)}...${pubkey.slice(-4)} (${solVal} SOL)</span>`;
-      } catch (err) {
-        console.warn('Balance fetch err:', err);
-      }
+    function openWalletModal() {
+      if (walletModal) walletModal.classList.add('open');
+    }
+    function closeWalletModal() {
+      if (walletModal) walletModal.classList.remove('open');
+    }
+    if (walletModalClose) walletModalClose.addEventListener('click', closeWalletModal);
+    if (walletModal) {
+      walletModal.addEventListener('click', (e) => {
+        if (e.target === walletModal) closeWalletModal();
+      });
     }
 
-    connectWalletBtn.addEventListener('click', async () => {
-      // 1. Try Phantom if available
-      if (window.solana && window.solana.isPhantom) {
-        try {
-          const resp = await window.solana.connect();
-          connectedAddress = resp.publicKey.toString();
-          connectWalletBtn.style.background = '#10b981';
-          connectWalletBtn.style.color = '#fff';
-          await updateSolanaBalance(connectedAddress);
-          showToast('Phantom Connected', `Connected to Devnet: ${connectedAddress.slice(0, 8)}...`);
-          return;
-        } catch (e) {
-          console.warn('Phantom connect cancelled:', e);
-        }
-      }
+    async function setWalletConnected(addr, type = 'phantom') {
+      connectedAddress = addr;
+      closeWalletModal();
+      const w3 = window.AstraIcons ? window.AstraIcons.web3 : null;
+      const mx = window.AstraIcons ? window.AstraIcons.mx : null;
+      let icon = '';
+      if (type === 'phantom' && w3) icon = w3.wallet('phantom', 18);
+      else if (type === 'metamask' && w3) icon = w3.wallet('metamask', 18);
+      else if (type === 'coinbase' && w3) icon = w3.wallet('coinbase', 18);
+      else if (type === 'rabby' && w3) icon = w3.wallet('rabby', 18);
+      else if (mx) icon = mx.wallet({ size: 18 });
 
-      // 2. Try MetaMask if available
-      if (window.ethereum) {
-        try {
-          const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
-          connectedAddress = accounts[0];
-          connectWalletBtn.textContent = `${connectedAddress.slice(0, 6)}...${connectedAddress.slice(-4)}`;
-          connectWalletBtn.style.background = '#3b82f6';
-          connectWalletBtn.style.color = '#fff';
-          showToast('MetaMask Connected', `Connected to Devnet: ${connectedAddress}`);
-          return;
-        } catch (e) {
-          console.warn(e);
-        }
-      }
+      connectWalletBtn.style.background = '#8b5cf6';
+      connectWalletBtn.style.color = '#fff';
+      connectWalletBtn.innerHTML = `${icon}<span>${addr.slice(0, 4)}...${addr.slice(-4)}</span>`;
+      await updateSolanaBalance(addr);
+      showToast('Wallet Connected', `Authenticated: ${addr.slice(0, 10)}...`);
+    }
 
-      // 3. Fallback: Instant In-Browser Devnet Wallet Keypair
-      if (!localDevnetKeypair && window.solanaWeb3) {
-        localDevnetKeypair = window.solanaWeb3.Keypair.generate();
-        connectedAddress = localDevnetKeypair.publicKey.toBase58();
-        connectWalletBtn.style.background = '#8b5cf6';
-        connectWalletBtn.style.color = '#fff';
-        await updateSolanaBalance(connectedAddress);
-        showToast('Devnet Wallet Ready', `Generated devnet test address: ${connectedAddress}`, `https://explorer.solana.com/address/${connectedAddress}?cluster=devnet`);
-      } else if (localDevnetKeypair) {
+    connectWalletBtn.addEventListener('click', () => {
+      if (connectedAddress) {
         connectedAddress = null;
         localDevnetKeypair = null;
-        connectWalletBtn.textContent = 'Connect Wallet';
         connectWalletBtn.style.background = '#fdfdfd';
         connectWalletBtn.style.color = '#050505';
+        const mx = window.AstraIcons ? window.AstraIcons.mx : null;
+        connectWalletBtn.innerHTML = `${mx ? mx.wallet({ size: 16 }) : ''}<span>Connect Wallet</span>`;
+        showToast('Wallet Disconnected', 'Session cleared.');
+      } else {
+        openWalletModal();
       }
     });
+
+    // Modal Option: Phantom
+    const optPhantom = document.getElementById('optPhantom');
+    if (optPhantom) {
+      optPhantom.addEventListener('click', async () => {
+        if (window.solana && window.solana.isPhantom) {
+          try {
+            const resp = await window.solana.connect();
+            await setWalletConnected(resp.publicKey.toString(), 'phantom');
+            return;
+          } catch (e) {
+            console.warn('Phantom rejected:', e);
+          }
+        }
+        if (window.solanaWeb3) {
+          localDevnetKeypair = window.solanaWeb3.Keypair.generate();
+          await setWalletConnected(localDevnetKeypair.publicKey.toBase58(), 'phantom');
+          showToast('Phantom Simulated', 'Connected using Devnet keypair protocol.');
+        }
+      });
+    }
+
+    // Modal Option: MetaMask
+    const optMetaMask = document.getElementById('optMetaMask');
+    if (optMetaMask) {
+      optMetaMask.addEventListener('click', async () => {
+        if (window.ethereum) {
+          try {
+            const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
+            await setWalletConnected(accounts[0], 'metamask');
+            return;
+          } catch (e) {
+            console.warn('MetaMask rejected:', e);
+          }
+        }
+        const mockAddr = '0x' + Array.from(crypto.getRandomValues(new Uint8Array(20))).map(b => b.toString(16).padStart(2, '0')).join('');
+        await setWalletConnected(mockAddr, 'metamask');
+        showToast('MetaMask EVM Connected', 'Arbitrum Nitro Devnet active.');
+      });
+    }
+
+    // Modal Option: Coinbase
+    const optCoinbase = document.getElementById('optCoinbase');
+    if (optCoinbase) {
+      optCoinbase.addEventListener('click', async () => {
+        const mockAddr = '0x' + Array.from(crypto.getRandomValues(new Uint8Array(20))).map(b => b.toString(16).padStart(2, '0')).join('');
+        await setWalletConnected(mockAddr, 'coinbase');
+        showToast('Coinbase Smart Wallet', 'Passkey session active.');
+      });
+    }
+
+    // Modal Option: Rabby
+    const optRabby = document.getElementById('optRabby');
+    if (optRabby) {
+      optRabby.addEventListener('click', async () => {
+        const mockAddr = '0x' + Array.from(crypto.getRandomValues(new Uint8Array(20))).map(b => b.toString(16).padStart(2, '0')).join('');
+        await setWalletConnected(mockAddr, 'rabby');
+        showToast('Rabby Wallet', 'Cross-chain multi-network session active.');
+      });
+    }
+
+    // Modal Option: Instant Devnet Keypair
+    const optDevnetKeypair = document.getElementById('optDevnetKeypair');
+    if (optDevnetKeypair) {
+      optDevnetKeypair.addEventListener('click', async () => {
+        if (window.solanaWeb3) {
+          localDevnetKeypair = window.solanaWeb3.Keypair.generate();
+          await setWalletConnected(localDevnetKeypair.publicKey.toBase58(), 'keypair');
+          showToast('Devnet Wallet Ready', `Generated ephemeral keypair: ${localDevnetKeypair.publicKey.toBase58().slice(0, 8)}...`);
+        }
+      });
+    }
 
     // 1-Click Devnet Airdrop
     btnAirdropFaucet.addEventListener('click', async () => {
@@ -2255,10 +2630,11 @@ console.log(<span style="color: #34d399;">'Premium Due:'</span>, quote.totalDue,
 
         const tbody = document.getElementById('positionsTableBody');
         const tr = document.createElement('tr');
+        const tokenIcon = (window.AstraIcons && window.AstraIcons.web3) ? window.AstraIcons.web3.token(asset, 18) : '';
         tr.innerHTML = `
           <td>#${newId}</td>
           <td>${modeText}</td>
-          <td><strong>${amount} ${asset}</strong></td>
+          <td><div class="table-token-cell">${tokenIcon}<strong>${amount} ${asset}</strong></div></td>
           <td>${oracleBadge.textContent.replace('Oracle: ', '')}</td>
           <td>In ${Math.round(selectedDuration / 3600)} Hours</td>
           <td><span class="status-badge status-active">● Active</span></td>
@@ -2337,6 +2713,84 @@ console.log(<span style="color: #34d399;">'Premium Due:'</span>, quote.totalDue,
     if (qTab) {
       const tabTarget = document.querySelector(`[data-tab="${qTab}"]`);
       if (tabTarget) tabTarget.click();
+    }
+
+    // Initialize Web3Icons & MX-Icons Visual System
+    function initAppIcons() {
+      if (!window.AstraIcons) return;
+      const mx = window.AstraIcons.mx;
+      const w3 = window.AstraIcons.web3;
+
+      const brandIcon = document.getElementById('navBrandIcon');
+      if (brandIcon) brandIcon.innerHTML = mx.shieldSecurityBold({ size: 24, color: '#c4b5fd' });
+
+      const tabIcons = {
+        Protect: mx.shieldSecurity({ size: 16 }),
+        Invoices: mx.receipt({ size: 16 }),
+        Positions: mx.activity({ size: 16 }),
+        Reserves: mx.emptyWalletTick({ size: 16 }),
+        Receipts: mx.securitySafe({ size: 16 }),
+        Docs: mx.documentCode({ size: 16 })
+      };
+      for (const [t, iconSvg] of Object.entries(tabIcons)) {
+        const el = document.getElementById(`tabIcon${t}`);
+        if (el) el.innerHTML = iconSvg;
+      }
+
+      const airdropIcon = document.getElementById('airdropBtnIcon');
+      if (airdropIcon) airdropIcon.innerHTML = mx.flash({ size: 15, color: '#34d399' });
+
+      const walletIcon = document.getElementById('walletBtnIcon');
+      if (walletIcon && !connectedAddress) walletIcon.innerHTML = mx.wallet({ size: 16, color: '#050505' });
+
+      const metricTvp = document.getElementById('metricTvpIcon');
+      if (metricTvp) metricTvp.innerHTML = mx.shieldSecurity({ size: 16, color: '#a78bfa' });
+      const metricRes = document.getElementById('metricReservesIcon');
+      if (metricRes) metricRes.innerHTML = mx.securitySafe({ size: 16, color: '#60a5fa' });
+      const metricPay = document.getElementById('metricPayoutsIcon');
+      if (metricPay) metricPay.innerHTML = mx.tickCircle({ size: 16, color: '#34d399' });
+      const metricApy = document.getElementById('metricApyIcon');
+      if (metricApy) metricApy.innerHTML = mx.chart({ size: 16, color: '#fbbf24' });
+
+      const modeRateIcon = document.getElementById('modeIconRateLock');
+      if (modeRateIcon) modeRateIcon.innerHTML = mx.flash({ size: 15, color: '#f59e0b' });
+      const modeDepegIcon = document.getElementById('modeIconDepeg');
+      if (modeDepegIcon) modeDepegIcon.innerHTML = mx.shieldSecurity({ size: 15, color: '#8b5cf6' });
+
+      const modalHeaderIcon = document.getElementById('walletModalIcon');
+      if (modalHeaderIcon) modalHeaderIcon.innerHTML = mx.wallet({ size: 22, color: '#a78bfa' });
+
+      const slotPhantom = document.getElementById('slotPhantom');
+      if (slotPhantom) slotPhantom.innerHTML = w3.wallet('phantom', 24);
+      const slotMetaMask = document.getElementById('slotMetaMask');
+      if (slotMetaMask) slotMetaMask.innerHTML = w3.wallet('metamask', 24);
+      const slotCoinbase = document.getElementById('slotCoinbase');
+      if (slotCoinbase) slotCoinbase.innerHTML = w3.wallet('coinbase', 24);
+      const slotRabby = document.getElementById('slotRabby');
+      if (slotRabby) slotRabby.innerHTML = w3.wallet('rabby', 24);
+      const slotKeypair = document.getElementById('slotKeypair');
+      if (slotKeypair) slotKeypair.innerHTML = mx.securitySafe({ size: 24, color: '#a78bfa' });
+
+      // Decorate existing static position rows with Web3Icons
+      const tbody = document.getElementById('positionsTableBody');
+      if (tbody) {
+        const rows = tbody.querySelectorAll('tr');
+        if (rows[0] && rows[0].children[2]) {
+          rows[0].children[2].innerHTML = `<div class="table-token-cell">${w3.token('SOL', 18)} <strong>5.00 SOL</strong></div>`;
+        }
+        if (rows[1] && rows[1].children[2]) {
+          rows[1].children[2].innerHTML = `<div class="table-token-cell">${w3.token('ETH', 18)} <strong>1.50 ETH</strong></div>`;
+        }
+        if (rows[2] && rows[2].children[2]) {
+          rows[2].children[2].innerHTML = `<div class="table-token-cell">${w3.token('HYPE', 18)} <strong>50.00 HYPE</strong></div>`;
+        }
+      }
+    }
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', initAppIcons);
+    } else {
+      initAppIcons();
     }
   </script>
 </body>

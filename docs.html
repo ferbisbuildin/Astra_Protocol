@@ -10,6 +10,9 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
 
+  <!-- Web3Icons & MX-Icons Visual System -->
+  <script src="./astra-icons.bundle.js"></script>
+
   <style>
     :root {
       --bg: #07070a;
@@ -288,6 +291,7 @@
 <body>
   <header class="docs-nav">
     <a href="index.html" class="brand">
+      <span id="docsBrandIcon" style="display: inline-flex; align-items: center;"></span>
       <span class="brand-logo">Astra</span>
       <span style="font-size: 12px; color: var(--ink-muted); font-weight: 500;">/ Docs</span>
     </a>
@@ -296,7 +300,7 @@
       <a href="index.html">Overview</a>
       <a href="app/index.html">Live App</a>
       <a href="docs.html" class="active">Developers</a>
-      <a href="https://github.com" target="_blank" rel="noopener">GitHub ↗</a>
+      <a href="https://github.com/ferbisbuildin/Astra_Protocol.git" target="_blank" rel="noopener">GitHub ↗</a>
       <a href="app/index.html" class="btn-launch">Launch App →</a>
     </div>
   </header>
@@ -401,7 +405,7 @@ console.log('Position Active:', tx.positionId);</code></pre>
 
       <!-- Section: Smart Contracts -->
       <section id="contracts-arbitrum" class="doc-section">
-        <h2>Arbitrum Nitro Contracts (Solidity 0.8.24)</h2>
+        <h2 style="display: flex; align-items: center; gap: 10px;"><span id="netIconArb"></span><span>Arbitrum Nitro Contracts (Solidity 0.8.24)</span></h2>
         <table class="docs-table">
           <thead>
             <tr><th>Contract</th><th>Role</th><th>Key Function</th></tr>
@@ -433,7 +437,7 @@ console.log('Position Active:', tx.positionId);</code></pre>
 
       <!-- Section: Solana Anchor -->
       <section id="contracts-solana" class="doc-section">
-        <h2>Solana Anchor Program (Rust)</h2>
+        <h2 style="display: flex; align-items: center; gap: 10px;"><span id="netIconSol"></span><span>Solana Anchor Program (Rust)</span></h2>
         <p>Located in <code>contracts/solana/programs/astra/src/lib.rs</code>:</p>
         <pre><code>// Solana Anchor Instruction: Create Position
 pub fn create_position(
@@ -468,5 +472,30 @@ pub fn create_position(
       </section>
     </main>
   </div>
+
+  <script>
+    function initDocsIcons() {
+      if (!window.AstraIcons) return;
+      const mx = window.AstraIcons.mx;
+      const w3 = window.AstraIcons.web3;
+      
+      const brand = document.getElementById('docsBrandIcon');
+      if (brand) brand.innerHTML = mx.shieldSecurityBold({ size: 24, color: '#c4b5fd' });
+
+      const arb = document.getElementById('netIconArb');
+      if (arb) arb.innerHTML = w3.network('arbitrum', 24);
+
+      const sol = document.getElementById('netIconSol');
+      if (sol) sol.innerHTML = w3.network('solana', 24);
+
+      const launch = document.querySelector('.btn-launch');
+      if (launch) launch.innerHTML = `<span>Launch App</span> ${mx.arrowRight({ size: 14 })}`;
+    }
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', initDocsIcons);
+    } else {
+      initDocsIcons();
+    }
+  </script>
 </body>
 </html>
