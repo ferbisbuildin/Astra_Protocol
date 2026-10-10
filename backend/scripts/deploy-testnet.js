@@ -52,21 +52,21 @@ async function deployArbitrumSepolia() {
   return deployed;
 }
 
-async function deploySolanaDevnet() {
-  console.log('--- [2/3] Solana Devnet Program & Protocol Account Deployment ---');
-  const connection = new Connection(clusterApiUrl('devnet'), 'confirmed');
+async function deploySolanaTestnet() {
+  console.log('--- [2/3] Solana Testnet Program & Protocol Account Deployment ---');
+  const connection = new Connection(clusterApiUrl('testnet'), 'confirmed');
   const version = await connection.getVersion();
   const slot = await connection.getSlot();
 
-  console.log(`✅ Connected to Solana Devnet node version: ${version['solana-core']} (Current Slot: ${slot})`);
+  console.log(`✅ Connected to Solana Testnet node version: ${version['solana-core']} (Current Slot: ${slot})`);
 
   const pubkeyStr = process.env.SOLANA_DEPLOYER_PUBKEY || 'GBoQWwa5SWsAFcRh1NQhWQ3Avmvwgsms6MmF2jg3Verk';
   const programId = 'AstraProtocoL1111111111111111111111111111111';
 
-  console.log(`🔑 Solana Devnet Deployer / Authority: ${pubkeyStr}`);
-  console.log(`📦 Astra Solana Anchor Program ID:    ${programId}`);
-  console.log(`   🔗 Solana Explorer: https://explorer.solana.com/address/${programId}?cluster=devnet`);
-  console.log(`   🔗 Authority Explorer: https://explorer.solana.com/address/${pubkeyStr}?cluster=devnet`);
+  console.log(`🔑 Solana Testnet Deployer / Authority: ${pubkeyStr}`);
+  console.log(`📦 Astra Solana Anchor Program ID:     ${programId}`);
+  console.log(`   🔗 Solana Explorer: https://explorer.solana.com/address/${programId}?cluster=testnet`);
+  console.log(`   🔗 Authority Explorer: https://explorer.solana.com/address/${pubkeyStr}?cluster=testnet`);
   console.log('');
 
   return { programId, authority: pubkeyStr };
@@ -112,8 +112,10 @@ export const config = {
   },
 
   // Solana Devnet Settings
+  // Solana Testnet Settings
   solana: {
-    rpcUrl: process.env.SOLANA_RPC_URL || 'https://api.devnet.solana.com',
+    rpcUrl: process.env.SOLANA_RPC_URL || 'https://api.testnet.solana.com',
+    cluster: 'testnet',
     programId: '${solanaData.programId}',
     authority: '${solanaData.authority}',
     pythSolUsdFeed: 'H6ARHf6YXhGYeQfUzQNGk6rDNnLBQKrenN712K4SEBy6',
@@ -142,7 +144,7 @@ export const config = {
 
 async function main() {
   const arb = await deployArbitrumSepolia();
-  const sol = await deploySolanaDevnet();
+  const sol = await deploySolanaTestnet();
   await deployHyperliquidTestnet();
   await updateConfigAndEnv(arb, sol);
 

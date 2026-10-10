@@ -17,8 +17,10 @@ export const config = {
   },
 
   // Solana Devnet Settings
+  // Solana Testnet Settings
   solana: {
-    rpcUrl: process.env.SOLANA_RPC_URL || 'https://api.devnet.solana.com',
+    rpcUrl: process.env.SOLANA_RPC_URL || 'https://api.testnet.solana.com',
+    cluster: 'testnet',
     programId: 'AstraProtocoL1111111111111111111111111111111',
     authority: 'GBoQWwa5SWsAFcRh1NQhWQ3Avmvwgsms6MmF2jg3Verk',
     pythSolUsdFeed: 'H6ARHf6YXhGYeQfUzQNGk6rDNnLBQKrenN712K4SEBy6',

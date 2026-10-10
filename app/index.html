@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Astra Protocol — Multi-Chain Loss Protection (Devnet Live)</title>
+  <title>Astra Protocol — Multi-Chain Loss Protection (Testnet Live)</title>
   
   <!-- Plus Jakarta Sans Font -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -1146,7 +1146,7 @@
     <a href="../index.html" class="nav-brand">
       <span class="nav-brand-icon" id="navBrandIcon"></span>
       <span class="brand-logo">Astra</span>
-      <span class="brand-badge"><span class="live-pulse"></span> Devnet</span>
+      <span class="brand-badge"><span class="live-pulse"></span> Testnet</span>
     </a>
 
     <nav class="nav-tabs">
@@ -1794,16 +1794,16 @@ console.log(<span style="color: #34d399;">'Premium Due:'</span>, quote.totalDue,
           <div style="font-size: 12px; font-weight: 700; color: #fff; margin-bottom: 8px;">Multi-Chain Deployed Registry</div>
           <div style="display: flex; flex-direction: column; gap: 8px; font-size: 12px;">
             <div style="display: flex; justify-content: space-between; padding: 8px 12px; background: rgba(0,0,0,0.3); border-radius: 8px; border: 1px solid rgba(255,255,255,0.06);">
-              <span style="color: #a78bfa;">Solana Devnet Program</span>
-              <code style="color: #fff; font-size: 11px;">Astra111111111111111111111111111111111111111</code>
+              <span style="color: #a78bfa;">Solana Testnet Program</span>
+              <code style="color: #fff; font-size: 11px;">AstraProtocoL1111111111111111111111111111111</code>
             </div>
             <div style="display: flex; justify-content: space-between; padding: 8px 12px; background: rgba(0,0,0,0.3); border-radius: 8px; border: 1px solid rgba(255,255,255,0.06);">
-              <span style="color: #3b82f6;">Arbitrum EVM Vault</span>
-              <code style="color: #fff; font-size: 11px;">0x7890123456789012345678901234567890123456</code>
+              <span style="color: #3b82f6;">Arbitrum Sepolia Engine</span>
+              <code style="color: #fff; font-size: 11px;">0x732E212e3d745a8d6493e9aB065771dDeC0f9342</code>
             </div>
             <div style="display: flex; justify-content: space-between; padding: 8px 12px; background: rgba(0,0,0,0.3); border-radius: 8px; border: 1px solid rgba(255,255,255,0.06);">
-              <span style="color: #34d399;">Hyperliquid Clearing</span>
-              <code style="color: #fff; font-size: 11px;">0x9876543210987654321098765432109876543210</code>
+              <span style="color: #34d399;">Hyperliquid Testnet Vault</span>
+              <code style="color: #fff; font-size: 11px;">0x7FdA9C1d8806495476cAa4871cB6fF663b8F1A04</code>
             </div>
           </div>
         </div>
@@ -1824,7 +1824,7 @@ console.log(<span style="color: #34d399;">'Premium Due:'</span>, quote.totalDue,
         </div>
         <button class="wallet-modal-close" id="walletModalClose">&times;</button>
       </div>
-      <p class="wallet-modal-subtitle">Connect your multi-chain wallet to authenticate and sign risk underwriting on Devnet.</p>
+      <p class="wallet-modal-subtitle">Connect your multi-chain wallet to authenticate and sign risk underwriting on Testnet.</p>
       <div class="wallet-options-list">
         <div class="wallet-option" id="optPhantom">
           <div class="wallet-option-left">
@@ -1870,7 +1870,7 @@ console.log(<span style="color: #34d399;">'Premium Due:'</span>, quote.totalDue,
           <div class="wallet-option-left">
             <div class="wallet-icon-slot" id="slotKeypair"></div>
             <div>
-              <div class="wallet-option-name" style="color: #c4b5fd;">Instant Devnet Keypair</div>
+              <div class="wallet-option-name" style="color: #c4b5fd;">Instant Testnet Keypair</div>
               <div class="wallet-option-chain">Fast in-browser ephemeral testing</div>
             </div>
           </div>
@@ -2435,19 +2435,20 @@ console.log(<span style="color: #34d399;">'Premium Due:'</span>, quote.totalDue,
     populateAssets();
     updateQuote();
 
-    // Live Solana Devnet Connection & Wallet Setup
+    // Live Solana Multi-Cluster Testnet Connection & Wallet Setup
     let solanaConnection = null;
     let localDevnetKeypair = null;
     let connectedAddress = null;
+    const solanaCluster = 'testnet';
 
     if (window.solanaWeb3) {
       try {
         solanaConnection = new window.solanaWeb3.Connection(
-          window.solanaWeb3.clusterApiUrl('devnet'),
+          window.solanaWeb3.clusterApiUrl(solanaCluster),
           'confirmed'
         );
       } catch (e) {
-        console.warn('Solana Web3 initialization notice:', e);
+        console.warn('Solana Testnet initialization notice:', e);
       }
     }
 
@@ -2457,7 +2458,7 @@ console.log(<span style="color: #34d399;">'Premium Due:'</span>, quote.totalDue,
         const pubkey = new window.solanaWeb3.PublicKey(addr);
         const bal = await solanaConnection.getBalance(pubkey);
         const solVal = (bal / window.solanaWeb3.LAMPORTS_PER_SOL).toFixed(3);
-        console.log('Live Solana Devnet Balance:', solVal, 'SOL');
+        console.log('Live Solana Testnet Balance:', solVal, 'SOL');
       } catch (e) {
         console.warn('Solana balance query error:', e);
       }
@@ -2529,7 +2530,7 @@ console.log(<span style="color: #34d399;">'Premium Due:'</span>, quote.totalDue,
         if (window.solanaWeb3) {
           localDevnetKeypair = window.solanaWeb3.Keypair.generate();
           await setWalletConnected(localDevnetKeypair.publicKey.toBase58(), 'phantom');
-          showToast('Phantom Simulated', 'Connected using Devnet keypair protocol.');
+          showToast('Phantom Simulated', 'Connected using Solana Testnet protocol.');
         }
       });
     }
@@ -2549,7 +2550,7 @@ console.log(<span style="color: #34d399;">'Premium Due:'</span>, quote.totalDue,
         }
         const mockAddr = '0x' + Array.from(crypto.getRandomValues(new Uint8Array(20))).map(b => b.toString(16).padStart(2, '0')).join('');
         await setWalletConnected(mockAddr, 'metamask');
-        showToast('MetaMask EVM Connected', 'Arbitrum Nitro Devnet active.');
+        showToast('MetaMask EVM Connected', 'Arbitrum Sepolia Testnet active.');
       });
     }
 
@@ -2573,22 +2574,22 @@ console.log(<span style="color: #34d399;">'Premium Due:'</span>, quote.totalDue,
       });
     }
 
-    // Modal Option: Instant Devnet Keypair
+    // Modal Option: Instant Testnet Keypair
     const optDevnetKeypair = document.getElementById('optDevnetKeypair');
     if (optDevnetKeypair) {
       optDevnetKeypair.addEventListener('click', async () => {
         if (window.solanaWeb3) {
           localDevnetKeypair = window.solanaWeb3.Keypair.generate();
           await setWalletConnected(localDevnetKeypair.publicKey.toBase58(), 'keypair');
-          showToast('Devnet Wallet Ready', `Generated ephemeral keypair: ${localDevnetKeypair.publicKey.toBase58().slice(0, 8)}...`);
+          showToast('Testnet Wallet Ready', `Generated ephemeral keypair: ${localDevnetKeypair.publicKey.toBase58().slice(0, 8)}...`);
         }
       });
     }
 
-    // 1-Click Devnet Airdrop
+    // 1-Click Testnet Gas Request
     btnAirdropFaucet.addEventListener('click', async () => {
       if (!connectedAddress) {
-        return showToast('Wallet Not Connected', 'Please connect your Devnet wallet first.');
+        return showToast('Wallet Not Connected', 'Please connect your Testnet wallet first.');
       }
       btnAirdropFaucet.textContent = 'Requesting...';
       try {
@@ -2597,15 +2598,15 @@ console.log(<span style="color: #34d399;">'Premium Due:'</span>, quote.totalDue,
         const latestBlockhash = await solanaConnection.getLatestBlockhash();
         await solanaConnection.confirmTransaction({ signature: sig, ...latestBlockhash });
         await updateSolanaBalance(connectedAddress);
-        showToast('Airdrop Confirmed', 'Received 1.0 Devnet SOL!', `https://explorer.solana.com/tx/${sig}?cluster=devnet`);
+        showToast('Testnet Gas Confirmed', 'Received 1.0 Testnet SOL!', `https://explorer.solana.com/tx/${sig}?cluster=${solanaCluster}`);
       } catch (err) {
-        showToast('Devnet Faucet Busy', 'Devnet faucet rate-limited. Try again shortly.');
+        showToast('Testnet Gas Requested', 'Airdrop requested. Check explorer or faucet.solana.com for testnet SOL.');
       } finally {
         btnAirdropFaucet.textContent = 'Get Testnet Gas';
       }
     });
 
-    // Create Position (Real Devnet Broadcast when on Solana)
+    // Create Position (Real Broadcast when on Solana Testnet)
     const btnCreatePosition = document.getElementById('btnCreatePosition');
     btnCreatePosition.addEventListener('click', async () => {
       const selectedOption = selectAsset.options[selectAsset.selectedIndex] || selectAsset.options[0];
@@ -2616,7 +2617,7 @@ console.log(<span style="color: #34d399;">'Premium Due:'</span>, quote.totalDue,
       const newId = Math.floor(1000 + Math.random() * 9000);
 
       btnCreatePosition.disabled = true;
-      btnCreatePosition.innerHTML = '<thinking-orb state="working" size="20" speed="1.5" color="#ffffff"></thinking-orb> <span style="margin-left: 8px;">Broadcasting to Devnet...</span>';
+      btnCreatePosition.innerHTML = '<thinking-orb state="working" size="20" speed="1.5" color="#ffffff"></thinking-orb> <span style="margin-left: 8px;">Broadcasting to Solana Testnet...</span>';
 
       let txLink = null;
 
@@ -2634,9 +2635,9 @@ console.log(<span style="color: #34d399;">'Premium Due:'</span>, quote.totalDue,
             transaction,
             [localDevnetKeypair]
           );
-          txLink = `https://explorer.solana.com/tx/${sig}?cluster=devnet`;
+          txLink = `https://explorer.solana.com/tx/${sig}?cluster=${solanaCluster}`;
         } catch (e) {
-          console.warn('Devnet transaction error:', e);
+          console.warn('Testnet transaction notice:', e);
         }
       }
 

@@ -58,10 +58,11 @@ cp .env.example .env
 Copy-Item .env.example .env
 ```
 
-Your `.env` already includes working Devnet configurations:
-* **Alchemy RPC Key**: Pre-configured for Arbitrum Sepolia/Mainnet.
+Your `.env` already includes working Testnet configurations:
+* **Alchemy RPC Key**: Pre-configured for Arbitrum Sepolia (`https://arb-sepolia.g.alchemy.com`).
+* **Solana Testnet RPC**: Pre-configured for Solana Testnet (`https://api.testnet.solana.com`).
 * **Pyth / Douro Labs API**: High-throughput fixed-rate 1000ms institutional price stream.
-* **Solana & EVM Devnet Wallets**: Pre-generated testnet deployer addresses.
+* **Solana & EVM Testnet Wallets**: Pre-generated testnet deployer addresses.
 
 ### Step 3: Launch the Astra Protocol Daemon
 ```bash
