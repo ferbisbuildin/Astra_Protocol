@@ -97,7 +97,7 @@ All endpoints and services are validated end-to-end with zero mock failures.
 
 The repository is configured with a strict `.gitignore` to protect all private keys, `.env` files, build caches, and node modules.
 
-To push the project to your GitHub repository ([https://github.com/ferbisbuildin/Astra_Protocol.git](https://github.com/ferbisbuildin/Astra_Protocol.git)):
+To push the project to your GitHub repository:
 
 ```bash
 # 1. Initialize Git repository
@@ -106,8 +106,8 @@ git init
 # 2. Set default branch to main
 git branch -M main
 
-# 3. Add remote origin
-git remote add origin https://github.com/ferbisbuildin/Astra_Protocol.git
+# 3. Add your remote origin
+git remote add origin <your-github-repo-url>
 
 # 4. Stage tracked files (.gitignore automatically excludes secrets)
 git add .

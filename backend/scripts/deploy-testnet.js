@@ -61,7 +61,7 @@ async function deploySolanaTestnet() {
   console.log(`✅ Connected to Solana Testnet node version: ${version['solana-core']} (Current Slot: ${slot})`);
 
   const pubkeyStr = process.env.SOLANA_DEPLOYER_PUBKEY || 'GBoQWwa5SWsAFcRh1NQhWQ3Avmvwgsms6MmF2jg3Verk';
-  const programId = 'AstraProtocoL1111111111111111111111111111111';
+  const programId = 'ABMTT5W2UNn5BZG8285V9Uzn3h5c1G3rG7YeCPMn7714';
 
   console.log(`🔑 Solana Testnet Deployer / Authority: ${pubkeyStr}`);
   console.log(`📦 Astra Solana Anchor Program ID:     ${programId}`);

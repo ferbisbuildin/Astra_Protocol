@@ -298,9 +298,9 @@
 
     <div class="nav-links">
       <a href="index.html">Overview</a>
-      <a href="app/index.html">Live App</a>
-      <a href="docs.html" class="active">Developers</a>
-      <a href="https://github.com/ferbisbuildin/Astra_Protocol.git" target="_blank" rel="noopener">GitHub ↗</a>
+      <a href="app/index.html">Protection</a>
+      <a href="app/index.html?tab=positions">Positions</a>
+      <a href="app/index.html?tab=docs" class="active">API Sandbox</a>
       <a href="app/index.html" class="btn-launch">Launch App →</a>
     </div>
   </header>
@@ -438,6 +438,10 @@ console.log('Position Active:', tx.positionId);</code></pre>
       <!-- Section: Solana Anchor -->
       <section id="contracts-solana" class="doc-section">
         <h2 style="display: flex; align-items: center; gap: 10px;"><span id="netIconSol"></span><span>Solana Anchor Program (Rust)</span></h2>
+        <div style="background: rgba(0,0,0,0.3); padding: 12px 16px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.08); margin-bottom: 14px;">
+          <div style="font-size: 11px; color: var(--ink-muted); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px;">Solana Testnet Program ID</div>
+          <code style="color: #c4b5fd; font-size: 12px; font-weight: 700;">ABMTT5W2UNn5BZG8285V9Uzn3h5c1G3rG7YeCPMn7714</code>
+        </div>
         <p>Located in <code>contracts/solana/programs/astra/src/lib.rs</code>:</p>
         <pre><code>// Solana Anchor Instruction: Create Position
 pub fn create_position(

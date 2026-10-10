@@ -5,10 +5,10 @@ resolution = true
 skip-lint = false
 
 [programs.localnet]
-astra = "AstraProtocoL1111111111111111111111111111111"
+astra = "ABMTT5W2UNn5BZG8285V9Uzn3h5c1G3rG7YeCPMn7714"
 
 [programs.devnet]
-astra = "AstraProtocoL1111111111111111111111111111111"
+astra = "ABMTT5W2UNn5BZG8285V9Uzn3h5c1G3rG7YeCPMn7714"
 
 [registry]
 url = "https://api.apr.dev"

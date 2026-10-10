@@ -8,7 +8,7 @@ pub mod state;
 use errors::AstraError;
 use state::*;
 
-declare_id!("AstraProtocoL1111111111111111111111111111111");
+declare_id!("ABMTT5W2UNn5BZG8285V9Uzn3h5c1G3rG7YeCPMn7714");
 
 pub const BPS: u64 = 10_000;
 pub const PRICE_SCALE: i64 = 100_000_000; // 8 decimals (1.00 = 100_000_000)

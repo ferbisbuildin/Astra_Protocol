@@ -21,7 +21,7 @@ export const config = {
   solana: {
     rpcUrl: process.env.SOLANA_RPC_URL || 'https://api.testnet.solana.com',
     cluster: 'testnet',
-    programId: 'AstraProtocoL1111111111111111111111111111111',
+    programId: 'ABMTT5W2UNn5BZG8285V9Uzn3h5c1G3rG7YeCPMn7714',
     authority: 'GBoQWwa5SWsAFcRh1NQhWQ3Avmvwgsms6MmF2jg3Verk',
     pythSolUsdFeed: 'H6ARHf6YXhGYeQfUzQNGk6rDNnLBQKrenN712K4SEBy6',
   },
