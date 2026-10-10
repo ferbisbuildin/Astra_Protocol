@@ -1363,11 +1363,11 @@
             </div>
           </div>
 
-          <!-- CoverFi V2 Duration Pricing Curve -->
+          <!-- Astra Non-Linear Duration Pricing Curve -->
           <div class="chart-card" style="padding: 14px 18px; margin-bottom: 20px;">
             <div class="chart-header" style="margin-bottom: 6px;">
               <div class="chart-title" style="font-size: 12px;">
-                <span>CoverFi V2 Duration Pricing Curve</span>
+                <span>Astra Non-Linear Duration Pricing Curve</span>
               </div>
               <span id="curveBpsBadge" style="font-size: 11px; color: #a78bfa; font-weight: 700;">Active: 30 bps</span>
             </div>
@@ -1762,7 +1762,7 @@ console.log(<span style="color: #34d399;">'Premium Due:'</span>, quote.totalDue,
         <div class="card">
           <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
             <h3 class="card-title" style="font-size: 17px; margin-bottom: 0;">Smart Contracts &amp; Pricing Math</h3>
-            <span style="font-size: 11px; color: #a78bfa; background: rgba(167, 139, 250, 0.12); padding: 3px 8px; border-radius: 99px; border: 1px solid rgba(167, 139, 250, 0.25);">CoverFi V2 Core</span>
+            <span style="font-size: 11px; color: #a78bfa; background: rgba(167, 139, 250, 0.12); padding: 3px 8px; border-radius: 99px; border: 1px solid rgba(167, 139, 250, 0.25);">Astra Protocol Engine</span>
           </div>
           <p class="card-subtitle" style="margin-bottom: 16px;">Formal verification, fee distribution algebra, and deployed cross-chain addresses.</p>
 
@@ -2279,7 +2279,7 @@ console.log(<span style="color: #34d399;">'Premium Due:'</span>, quote.totalDue,
       ctx.fillText(`Spot $${price.toFixed(1)}`, 20, currY - 5);
     }
 
-    // 2. CoverFi V2 Non-Linear Duration Risk Curve Chart
+    // 2. Astra Non-Linear Duration Risk Curve Chart
     function drawRiskCurveChart(durationSec) {
       const canvas = document.getElementById('riskCurveCanvas');
       if (!canvas) return;
@@ -2908,6 +2908,19 @@ console.log(<span style="color: #34d399;">'Premium Due:'</span>, quote.totalDue,
 
         const w3 = window.AstraIcons ? window.AstraIcons.web3 : null;
         tbody.innerHTML = '';
+
+        if (positions.length === 0) {
+          tbody.innerHTML = `
+            <tr>
+              <td colspan="7" style="text-align: center; padding: 48px 16px; color: var(--ink-muted);">
+                <div style="font-size: 28px; margin-bottom: 8px;">🛡️</div>
+                <div style="font-weight: 600; color: #fff; font-size: 15px; margin-bottom: 4px;">No Open Protection Positions</div>
+                <div style="font-size: 13px;">Create a position in the Protect panel to lock rates or set a depeg floor.</div>
+              </td>
+            </tr>
+          `;
+          return;
+        }
 
         positions.forEach((p) => {
           const tr = document.createElement('tr');

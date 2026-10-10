@@ -119,7 +119,7 @@ pub mod astra {
         let free_capacity = reserve.total_liquidity.saturating_sub(reserve.total_locked_capacity);
         require!(maximum_payout <= free_capacity, AstraError::InsufficientCapacity);
 
-        // Non-linear duration-based pricing (1:1 with CoverFi)
+        // Non-linear duration-based pricing (Astra Risk Engine)
         let base_bps = if duration_seconds <= ONE_DAY {
             30_u64
         } else if duration_seconds <= 7 * ONE_DAY {

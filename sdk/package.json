@@ -1,0 +1,25 @@
+{
+  "name": "@astra/sdk",
+  "version": "1.0.0",
+  "description": "Official Multi-Chain SDK for Astra Protocol (Solana, Arbitrum, Hyperliquid)",
+  "main": "index.js",
+  "types": "index.d.ts",
+  "type": "module",
+  "scripts": {
+    "test": "node test-sdk.js"
+  },
+  "keywords": [
+    "astra",
+    "defi",
+    "solana",
+    "arbitrum",
+    "hyperliquid",
+    "hedging",
+    "loss-protection",
+    "rate-lock",
+    "depeg-shield",
+    "sdk"
+  ],
+  "author": "Astra Protocol Core Engineering",
+  "license": "MIT"
+}

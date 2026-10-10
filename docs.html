@@ -311,7 +311,7 @@
       <div class="sidebar-heading">Getting Started</div>
       <a href="#overview" class="active">Overview &amp; Architecture</a>
       <a href="#quickstart">5-Minute Quickstart</a>
-      <a href="#formula">CoverFi V2 Formula</a>
+      <a href="#formula">Astra Pricing Formula</a>
 
       <div class="sidebar-heading">Smart Contracts</div>
       <a href="#contracts-arbitrum">Arbitrum Nitro Contracts</a>
@@ -330,7 +330,7 @@
       <div class="hero-badge">● Astra Protocol V2 — Developer Docs</div>
       <h1>Build with Multi-Chain Loss Protection</h1>
       <p class="lead">
-        Astra brings CoverFi V2 loss-protection to Solana, Arbitrum One, and Hyperliquid. Accept payments with guaranteed exchange rate locks and protect token balances against market drawdowns.
+        Astra brings automated loss-protection to Solana, Arbitrum One, and Hyperliquid. Accept payments with guaranteed exchange rate locks and protect token balances against market drawdowns.
       </p>
 
       <!-- Section: Overview -->
@@ -354,11 +354,11 @@
 
       <!-- Section: Formula -->
       <section id="formula" class="doc-section">
-        <h2>CoverFi V2 Underwriting Formula</h2>
+        <h2>Astra Underwriting Pricing Formula</h2>
         <p>
-          Astra implements the exact non-linear duration curve and reserve utilization safeguards ported from CoverFi V2:
+          Astra implements mathematical non-linear duration risk curves and reserve utilization safeguards:
         </p>
-        <pre><code>// CoverFi V2 Risk Premium Specification:
+        <pre><code>// Astra Risk Premium Specification:
 NotionalValue = Amount * CurrentOraclePrice
 BaseRateBps   = DurationTier(30 bps, 100 bps, 150 bps, 250 bps)
 SafetyMargin  = 20 bps

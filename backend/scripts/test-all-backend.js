@@ -89,7 +89,7 @@ async function runTests() {
   }
 
   // 3. Dynamic Quoting Engine
-  console.log('\n[3] Testing CoverFi V2 Quoting Engine Across Chains...');
+  console.log('\n[3] Testing Astra Protocol Quoting Engine Across Chains...');
   const testQuotes = [
     { chain: 'solana', asset: 'SOL', amount: 5, duration: 86400, mode: 'depeg-shield', floor: 95 },
     { chain: 'arbitrum', asset: 'ETH', amount: 2, duration: 3600, mode: 'rate-lock', floor: 0 },

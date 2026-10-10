@@ -6,7 +6,7 @@ import "./interfaces/IAstraContracts.sol";
 /**
  * @title AstraProtectionEngine
  * @notice Complete loss-protection engine for Astra on Arbitrum.
- * Faithfully ports CoverFi V2 mechanics including Rate Lock, Depeg/Floor Shield,
+ * Provides autonomous Rate Lock, Depeg/Floor Shield,
  * tiered non-linear pricing, concentration/utilization surcharges, and partner fee routing.
  */
 contract AstraProtectionEngine {
@@ -139,7 +139,7 @@ contract AstraProtectionEngine {
         defaultPayoutAsset = _payoutAsset;
     }
 
-    // --- Pricing Engine Core (1:1 with CoverFi) ---
+    // --- Pricing Engine Core (Astra Dynamic Model) ---
 
     function getBaseBps(uint256 duration) public pure returns (uint256) {
         require(duration > 0 && duration <= MAX_DURATION, "Invalid duration");

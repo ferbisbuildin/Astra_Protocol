@@ -1,22 +1,22 @@
 # Astra Protocol — Multi-Chain Loss Protection Protocol
 
-Astra is an open-source, multi-chain loss protection and decentralized finance protocol built on **Solana**, **Arbitrum One**, and **Hyperliquid (HyperEVM)**, evolved from the open-source architecture of CoverFi.
+Astra is an enterprise-grade, multi-chain loss protection and decentralized finance protocol natively deployed on **Solana**, **Arbitrum One**, and **Hyperliquid (HyperEVM)**.
 
 ---
 
-## 🌟 Architecture & Evolution from CoverFi
+## 🌟 Multi-Chain Architecture & Specification
 
-The cloned repositories in `coverfi/` (`coverfi-contracts`, `CoverFi-backend`, `CoverFI-logic-pages`, `Coverfi-landing`, `coverfi-docs`, `coverfi-research`) have been studied and ported into a multi-chain architecture:
+Astra Protocol is designed from the ground up for high-throughput, cross-chain financial protection:
 
-| Component | CoverFi (Original) | Astra Protocol (Multi-Chain) |
-| :--- | :--- | :--- |
-| **Primary Chain** | Stellar / Soroban (Rust) | **Solana** (Anchor), **Arbitrum One** (Solidity), **Hyperliquid** (HyperEVM) |
-| **Oracle Feed** | Band / Soroban Oracle Adapter | **Pyth Network** (Solana), **Chainlink** (Arbitrum), **Hyperliquid L1 Mark Price** (HyperEVM) |
-| **Protection Modes** | Rate Lock & Depeg Shield | **Rate Lock** (Protected Payments) & **Depeg/Floor Shield** (Balance Floor) |
-| **Pricing Model** | Tiered Duration (30, 100, 150, 250 bps) + Surcharges | Exact Non-Linear Duration Curve + Volatility/Utilization/Concentration Surcharges |
-| **Fee Routing** | 78% LP / 12% Treasury / 7% Safety / 3% Keepers | Identical 7,800 / 1,200 / 700 / 300 bps routing with automated keeper bounties |
-| **Landing Page** | Astro / React | **Pure Single-File Self-Contained `index.html`** with seamless looping globe video |
-| **Web App** | React / Freighter Wallet | **Interactive Multi-Chain App (`app/index.html`)** supporting Solana, Arbitrum & Hyperliquid |
+| Component | Architecture Specification |
+| :--- | :--- |
+| **Supported Chains** | **Solana** (Anchor), **Arbitrum One** (Solidity / Arbitrum Nitro), **Hyperliquid** (HyperEVM) |
+| **Oracle Feeds** | **Pyth Network** (Solana low-latency pull oracle), **Chainlink** (Arbitrum), **Hyperliquid L1 Mark Price Engine** |
+| **Protection Modes** | **Rate Lock** (Commercial payment protection) & **Depeg / Floor Shield** (Balance floor protection) |
+| **Pricing Engine** | Non-Linear Duration Curve (`30`, `100`, `150`, `250` bps) + Dynamic Volatility, Utilization & Concentration surcharges |
+| **Fee Distribution** | 78% Underwriting LP Pool / 12% Protocol Treasury / 7% Safety Reserve / 3% Automated Keepers |
+| **Web Experience** | **Ultra-Fast Landing Page (`index.html`)** & **Interactive Web3 App (`app/index.html`)** |
+| **Client Integration** | Official JavaScript/TypeScript SDK (`@astra/sdk`) for merchants, traders, and institutional apps |
 
 ---
 

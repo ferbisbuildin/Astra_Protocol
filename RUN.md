@@ -128,7 +128,7 @@ git push -u origin main
 | Method | Endpoint | Description |
 | :--- | :--- | :--- |
 | `GET` | `/api/v1/health` | Protocol status, active chains, and engine version |
-| `GET` | `/api/v1/quote` | Live dynamic quotation with CoverFi V2 duration curve & reserve checks |
+| `GET` | `/api/v1/quote` | Live dynamic quotation with Astra Protocol duration curve & reserve checks |
 | `GET` | `/api/v1/history?symbol=SOL` | High-throughput historical OHLCV candles from Douro Labs Pyth feed |
 | `POST` | `/api/v1/positions` | Create a protected position on Solana, Arbitrum, or Hyperliquid |
 | `POST` | `/api/v1/positions/:id/settle`| Settle position and trigger automated payout if market hit floor |

@@ -60,8 +60,8 @@ app.get(['/app', '/dashboard'], (req, res) => {
   res.sendFile(path.join(__dirname, '../app/index.html'));
 });
 
-// In-memory data structures with seed data
-const mockPositions = new Map();
+// In-memory protocol state
+const activePositions = new Map();
 const invoices = new Map();
 const usernames = new Map();
 
@@ -74,76 +74,6 @@ const reservePool = {
     ['default', 1000],
   ]),
 };
-
-// Seed default realistic positions matching the app dashboard
-function seedDefaultPositions() {
-  mockPositions.set('1042', {
-    id: '1042',
-    chain: 'solana',
-    mode: 'depeg-shield',
-    asset: 'SOL',
-    amount: 5.0,
-    owner: '9XiVw7X8PBh4LgDbsx13uNBujQKHTTEZbxrjbLdkc3B9',
-    recipient: '9XiVw7X8PBh4LgDbsx13uNBujQKHTTEZbxrjbLdkc3B9',
-    partner: null,
-    invoiceHash: null,
-    entryPrice: 108.49,
-    floorPrice: 95.0,
-    maximumPayout: 488.20,
-    startTime: Date.now() - 3600 * 1000,
-    expiryTime: Date.now() + 82800 * 1000,
-    settlementPrice: 0,
-    status: 'Active',
-    claimablePayout: 0,
-    payoutClaimed: false,
-    principalWithdrawn: false,
-  });
-
-  mockPositions.set('1038', {
-    id: '1038',
-    chain: 'arbitrum',
-    mode: 'rate-lock',
-    asset: 'ETH',
-    amount: 1.5,
-    owner: '0xe5EFDDe4bA71a8DAF740B65256B583Fb774Aa93f',
-    recipient: '0xe5EFDDe4bA71a8DAF740B65256B583Fb774Aa93f',
-    partner: null,
-    invoiceHash: null,
-    entryPrice: 2469.25,
-    floorPrice: 2469.25,
-    maximumPayout: 3333.48,
-    startTime: Date.now() - 7200 * 1000,
-    expiryTime: Date.now() - 1000, // Expired
-    settlementPrice: 2427.58,
-    status: 'Claimable',
-    claimablePayout: 62.50,
-    payoutClaimed: false,
-    principalWithdrawn: false,
-  });
-
-  mockPositions.set('1035', {
-    id: '1035',
-    chain: 'hyperliquid',
-    mode: 'depeg-shield',
-    asset: 'HYPE',
-    amount: 50.0,
-    owner: '0x3a4b7f8841c2de9876a3b2b001928374a5e19f20',
-    recipient: '0x3a4b7f8841c2de9876a3b2b001928374a5e19f20',
-    partner: null,
-    invoiceHash: null,
-    entryPrice: 44.0,
-    floorPrice: 40.0,
-    maximumPayout: 1980.0,
-    startTime: Date.now() - 86400 * 1000,
-    expiryTime: Date.now() + 6 * 86400 * 1000,
-    settlementPrice: 0,
-    status: 'Active',
-    claimablePayout: 0,
-    payoutClaimed: false,
-    principalWithdrawn: false,
-  });
-}
-seedDefaultPositions();
 
 /**
  * Health Check
@@ -197,7 +127,7 @@ app.get('/api/v1/quote', async (req, res) => {
     // Maximum payout: 90% coverage
     const maximumPayout = notional * 0.90;
 
-    // Non-linear duration curve (CoverFi specification)
+    // Non-linear duration curve (Astra specification)
     let baseBps = 30; // <= 1 day
     if (numDuration > 14 * 86400) {
       baseBps = 250;
@@ -274,8 +204,8 @@ app.post('/api/v1/positions', mutationLimiter, async (req, res) => {
       mode: mode || 'depeg-shield',
       asset: cleanAsset,
       amount: numAmount,
-      owner: owner || '9XiVw7X8PBh4LgDbsx13uNBujQKHTTEZbxrjbLdkc3B9',
-      recipient: recipient || owner || '9XiVw7X8PBh4LgDbsx13uNBujQKHTTEZbxrjbLdkc3B9',
+      owner: owner || '0x0000000000000000000000000000000000000000',
+      recipient: recipient || owner || '0x0000000000000000000000000000000000000000',
       partner: partner || null,
       invoiceHash: invoiceHash || null,
       entryPrice: priceInfo.price,
@@ -290,7 +220,7 @@ app.post('/api/v1/positions', mutationLimiter, async (req, res) => {
       principalWithdrawn: false,
     };
 
-    mockPositions.set(id, position);
+    activePositions.set(id, position);
     res.status(201).json(position);
   } catch (err) {
     res.status(500).json({ error: err.message });
@@ -299,7 +229,7 @@ app.post('/api/v1/positions', mutationLimiter, async (req, res) => {
 
 app.get('/api/v1/positions', (req, res) => {
   const { address, chain } = req.query;
-  let all = Array.from(mockPositions.values());
+  let all = Array.from(activePositions.values());
   if (address) {
     all = all.filter(p => 
       p.owner?.toLowerCase() === address.toLowerCase() ||
@@ -313,13 +243,13 @@ app.get('/api/v1/positions', (req, res) => {
 });
 
 app.get('/api/v1/positions/:id', (req, res) => {
-  const pos = mockPositions.get(req.params.id);
+  const pos = activePositions.get(req.params.id);
   if (!pos) return res.status(404).json({ error: 'Position not found' });
   res.json(pos);
 });
 
 app.post('/api/v1/positions/:id/settle', mutationLimiter, async (req, res) => {
-  const pos = mockPositions.get(req.params.id);
+  const pos = activePositions.get(req.params.id);
   if (!pos) return res.status(404).json({ error: 'Position not found' });
 
   // Security: Check if already settled or claimed
@@ -354,7 +284,7 @@ app.post('/api/v1/positions/:id/settle', mutationLimiter, async (req, res) => {
  * Claim Payout with Double-Claim & Replay Protection
  */
 app.post('/api/v1/positions/:id/claim', mutationLimiter, (req, res) => {
-  const pos = mockPositions.get(req.params.id);
+  const pos = activePositions.get(req.params.id);
   if (!pos) return res.status(404).json({ error: 'Position not found' });
 
   // Security: Replay / Double-claim prevention
@@ -480,7 +410,7 @@ app.post('/api/v1/invoices', mutationLimiter, (req, res) => {
     const invoice = {
       token,
       invoiceHash,
-      merchantWallet: merchantWallet || recipient || '9XiVw7X8PBh4LgDbsx13uNBujQKHTTEZbxrjbLdkc3B9',
+      merchantWallet: merchantWallet || recipient || '0x0000000000000000000000000000000000000000',
       asset: asset.toUpperCase(),
       amount: numAmount,
       durationSeconds: parseInt(durationSeconds, 10) || 3600,
@@ -518,7 +448,7 @@ app.post('/api/v1/invoices/:token/pay', mutationLimiter, (req, res) => {
   }
 
   inv.status = 'paid';
-  inv.customerWallet = req.body.customerWallet || req.body.payer || '0xe5EFDDe4bA71a8DAF740B65256B583Fb774Aa93f';
+  inv.customerWallet = req.body.customerWallet || req.body.payer || '0x0000000000000000000000000000000000000000';
   inv.paidAt = Date.now();
   inv.receiptHash = '0x' + crypto.randomBytes(32).toString('hex');
   res.json({ success: true, invoice: inv });
@@ -615,7 +545,7 @@ app.get('/api/v1/stats', (req, res) => {
     totalValueProtectedUsd: 14_850_200,
     totalReserveLiquidityUsd: reservePool.totalLiquidity,
     totalPayoutsSettledUsd: 840_320,
-    activePositionsCount: mockPositions.size + 1420,
+    activePositionsCount: activePositions.size,
     supportedChains: ['Solana Devnet', 'Arbitrum Nitro / Sepolia', 'Hyperliquid Testnet'],
     underwritingYieldApy: '11.8%',
   });
