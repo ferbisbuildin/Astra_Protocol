@@ -1,0 +1,22 @@
+{
+  "name": "astra-multichain-backend",
+  "version": "1.0.0",
+  "description": "Astra Multi-Chain Protocol Backend, Oracle & Settlement Keeper for Solana, Arbitrum & Hyperliquid",
+  "main": "server.js",
+  "type": "module",
+  "scripts": {
+    "start": "node server.js",
+    "test": "node scripts/test-all-backend.js",
+    "dev": "node --watch server.js",
+    "keeper": "node services/settlement_keeper.js",
+    "oracle": "node services/oracle_service.js"
+  },
+  "dependencies": {
+    "@solana/web3.js": "^1.95.8",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.7",
+    "ethers": "^6.13.5",
+    "express": "^4.21.2",
+    "thinking-orbs": "^0.3.2"
+  }
+}

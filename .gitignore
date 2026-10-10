@@ -1,0 +1,46 @@
+# Astra Protocol — Git Ignore Rules
+
+# Dependencies
+node_modules/
+*/node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Environment Secrets & Private Keys (CRITICAL: Never commit keys)
+.env
+.env.local
+.env.*.local
+*.env
+backend/.env
+deployer-keys.json
+*keypair*.json
+*.pem
+*.key
+id.json
+
+# Rust, Anchor & Solana Build Artifacts
+target/
+contracts/**/target/
+**/*.rs.bk
+
+# EVM / Hardhat / Foundry Build Artifacts
+artifacts/
+cache/
+typechain/
+typechain-types/
+
+# System & OS Files
+.DS_Store
+Thumbs.db
+*.log
+logs/
+*.tmp
+
+# IDE Settings
+.vscode/
+.idea/
+
+# Local Reference Clones (Cloned third-party CoverFi sources)
+coverfi/

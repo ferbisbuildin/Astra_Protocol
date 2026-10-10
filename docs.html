@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Astra Protocol — Developer Documentation &amp; API Reference</title>
+
+  <!-- Google Fonts: Plus Jakarta Sans & JetBrains Mono -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --bg: #07070a;
+      --card-bg: rgba(18, 18, 24, 0.75);
+      --card-border: rgba(255, 255, 255, 0.08);
+      --accent-purple: #8b5cf6;
+      --accent-blue: #3b82f6;
+      --accent-green: #10b981;
+      --ink: #ffffff;
+      --ink-muted: #9e9ea7;
+      --code-bg: #0d0d14;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background-color: var(--bg);
+      color: var(--ink);
+      font-family: 'Plus Jakarta Sans', -apple-system, sans-serif;
+      min-height: 100vh;
+      line-height: 1.6;
+      background-image: 
+        radial-gradient(circle at 15% 15%, rgba(139, 92, 246, 0.12) 0%, transparent 45%),
+        radial-gradient(circle at 85% 85%, rgba(59, 130, 246, 0.12) 0%, transparent 45%);
+    }
+
+    /* Navigation Header */
+    header.docs-nav {
+      height: 72px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 36px;
+      border-bottom: 1px solid var(--card-border);
+      background: rgba(7, 7, 10, 0.85);
+      backdrop-filter: blur(20px);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      text-decoration: none;
+      color: #fff;
+    }
+
+    .brand-logo {
+      font-weight: 800;
+      font-size: 24px;
+      background: linear-gradient(135deg, #fff 0%, #c4b5fd 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 24px;
+    }
+
+    .nav-links a {
+      color: var(--ink-muted);
+      text-decoration: none;
+      font-size: 13.5px;
+      font-weight: 500;
+      transition: color 0.18s ease;
+    }
+    .nav-links a:hover, .nav-links a.active {
+      color: #fff;
+    }
+
+    .btn-launch {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: #fdfdfd;
+      color: #050505;
+      padding: 8px 16px;
+      border-radius: 99px;
+      font-size: 12.5px;
+      font-weight: 600;
+      text-decoration: none;
+      transition: background 0.18s ease;
+    }
+    .btn-launch:hover {
+      background: #fff;
+    }
+
+    /* Layout */
+    .docs-container {
+      max-width: 1240px;
+      margin: 40px auto;
+      padding: 0 28px;
+      display: grid;
+      grid-template-columns: 240px 1fr;
+      gap: 40px;
+    }
+
+    /* Sidebar */
+    .sidebar {
+      position: sticky;
+      top: 100px;
+      height: fit-content;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .sidebar-heading {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      color: #71717a;
+      margin: 16px 0 6px 12px;
+    }
+    .sidebar-heading:first-child { margin-top: 0; }
+
+    .sidebar a {
+      color: var(--ink-muted);
+      text-decoration: none;
+      font-size: 13px;
+      font-weight: 500;
+      padding: 8px 12px;
+      border-radius: 10px;
+      transition: all 0.15s ease;
+    }
+    .sidebar a:hover {
+      color: #fff;
+      background: rgba(255, 255, 255, 0.05);
+    }
+    .sidebar a.active {
+      color: #c4b5fd;
+      background: rgba(139, 92, 246, 0.15);
+      font-weight: 600;
+    }
+
+    /* Content Area */
+    .docs-content {
+      min-width: 0;
+    }
+
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(139, 92, 246, 0.15);
+      border: 1px solid rgba(139, 92, 246, 0.35);
+      padding: 4px 12px;
+      border-radius: 99px;
+      color: #c4b5fd;
+      font-size: 11.5px;
+      font-weight: 600;
+      margin-bottom: 14px;
+    }
+
+    h1 {
+      font-size: 36px;
+      font-weight: 800;
+      letter-spacing: -0.8px;
+      margin-bottom: 12px;
+    }
+
+    .lead {
+      font-size: 16px;
+      color: var(--ink-muted);
+      margin-bottom: 32px;
+      max-width: 720px;
+    }
+
+    .doc-section {
+      margin-bottom: 56px;
+      scroll-margin-top: 100px;
+    }
+
+    h2 {
+      font-size: 22px;
+      font-weight: 700;
+      letter-spacing: -0.4px;
+      margin-bottom: 14px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid var(--card-border);
+    }
+
+    h3 {
+      font-size: 16px;
+      font-weight: 700;
+      margin: 20px 0 10px;
+      color: #e4e4e7;
+    }
+
+    p {
+      color: #a1a1aa;
+      font-size: 14px;
+      margin-bottom: 14px;
+      line-height: 1.65;
+    }
+
+    /* Code blocks */
+    pre {
+      background: var(--code-bg);
+      border: 1px solid rgba(255, 255, 255, 0.09);
+      border-radius: 14px;
+      padding: 16px 20px;
+      overflow-x: auto;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12.5px;
+      line-height: 1.6;
+      color: #e2e8f0;
+      margin: 14px 0 20px;
+    }
+    code {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      background: rgba(255, 255, 255, 0.08);
+      padding: 2px 6px;
+      border-radius: 6px;
+      color: #c4b5fd;
+    }
+
+    /* Tables */
+    .docs-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 16px 0 24px;
+      font-size: 13px;
+    }
+    .docs-table th {
+      text-align: left;
+      padding: 10px 14px;
+      background: rgba(255, 255, 255, 0.04);
+      color: #e4e4e7;
+      font-weight: 600;
+      border-bottom: 1px solid var(--card-border);
+    }
+    .docs-table td {
+      padding: 12px 14px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      color: #a1a1aa;
+    }
+
+    /* Cards Grid */
+    .feature-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 16px;
+      margin: 20px 0;
+    }
+    .feature-box {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      padding: 20px;
+      border-radius: 16px;
+    }
+    .feature-title {
+      font-size: 14px;
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 6px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    @media (max-width: 900px) {
+      .docs-container { grid-template-columns: 1fr; }
+      .sidebar { display: none; }
+      .feature-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+
+<body>
+  <header class="docs-nav">
+    <a href="index.html" class="brand">
+      <span class="brand-logo">Astra</span>
+      <span style="font-size: 12px; color: var(--ink-muted); font-weight: 500;">/ Docs</span>
+    </a>
+
+    <div class="nav-links">
+      <a href="index.html">Overview</a>
+      <a href="app/index.html">Live App</a>
+      <a href="docs.html" class="active">Developers</a>
+      <a href="https://github.com" target="_blank" rel="noopener">GitHub ↗</a>
+      <a href="app/index.html" class="btn-launch">Launch App →</a>
+    </div>
+  </header>
+
+  <div class="docs-container">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="sidebar-heading">Getting Started</div>
+      <a href="#overview" class="active">Overview &amp; Architecture</a>
+      <a href="#quickstart">5-Minute Quickstart</a>
+      <a href="#formula">CoverFi V2 Formula</a>
+
+      <div class="sidebar-heading">Smart Contracts</div>
+      <a href="#contracts-arbitrum">Arbitrum Nitro Contracts</a>
+      <a href="#contracts-solana">Solana Anchor Program</a>
+      <a href="#contracts-hyperliquid">Hyperliquid &amp; HyperEVM</a>
+
+      <div class="sidebar-heading">REST &amp; Oracle API</div>
+      <a href="#api-quotes">Quoting Engine API</a>
+      <a href="#api-pyth">Pyth Douro Labs Feed</a>
+      <a href="#api-receipts">ZK Proof Receipts</a>
+      <a href="#api-usernames">Username Registry</a>
+    </aside>
+
+    <!-- Main Docs Content -->
+    <main class="docs-content">
+      <div class="hero-badge">● Astra Protocol V2 — Developer Docs</div>
+      <h1>Build with Multi-Chain Loss Protection</h1>
+      <p class="lead">
+        Astra brings CoverFi V2 loss-protection to Solana, Arbitrum One, and Hyperliquid. Accept payments with guaranteed exchange rate locks and protect token balances against market drawdowns.
+      </p>
+
+      <!-- Section: Overview -->
+      <section id="overview" class="doc-section">
+        <h2>Architecture &amp; Core Concepts</h2>
+        <p>
+          Astra operates as an autonomous risk-underwriting layer. Users and merchants pay a small dynamic risk premium in USDC to guarantee the downside value of volatile assets (SOL, ETH, BTC, HYPE, ARB). If the market depegs or drops below the chosen threshold before settlement, the protocol automatically transfers loss compensation from multi-chain liquidity vaults.
+        </p>
+
+        <div class="feature-grid">
+          <div class="feature-box">
+            <div class="feature-title">⚡ Rate Lock (Payment Protection)</div>
+            <p>Guarantees a fixed exchange rate for merchant checkout or peer-to-peer transfers over windows from 15 minutes to 24 hours.</p>
+          </div>
+          <div class="feature-box">
+            <div class="feature-title">🛡️ Depeg Shield (Balance Protection)</div>
+            <p>Insulates on-chain portfolio balances against adverse market drawdowns with an adjustable floor trigger over 1 to 30 days.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Section: Formula -->
+      <section id="formula" class="doc-section">
+        <h2>CoverFi V2 Underwriting Formula</h2>
+        <p>
+          Astra implements the exact non-linear duration curve and reserve utilization safeguards ported from CoverFi V2:
+        </p>
+        <pre><code>// CoverFi V2 Risk Premium Specification:
+NotionalValue = Amount * CurrentOraclePrice
+BaseRateBps   = DurationTier(30 bps, 100 bps, 150 bps, 250 bps)
+SafetyMargin  = 20 bps
+RawPremium    = (NotionalValue * (BaseRateBps + SafetyMargin)) / 10,000
+
+// Fee Distribution (BPS Splits):
+LP Underwriters (ReserveVault) : 7,800 bps (78%)
+Protocol Treasury             : 1,200 bps (12%)
+Safety Fund Margin             :   700 bps  (7%)
+Automation Keeper Bounty       :   300 bps  (3%)</code></pre>
+      </section>
+
+      <!-- Section: Quickstart -->
+      <section id="quickstart" class="doc-section">
+        <h2>5-Minute Quickstart (TypeScript SDK)</h2>
+        <p>Install the Astra client or query the local backend daemon directly:</p>
+        <pre><code>import { AstraClient } from '@astra/sdk';
+
+// Initialize Astra unified client
+const astra = new AstraClient({
+  endpoint: 'http://localhost:4000/api/v1',
+});
+
+// 1. Fetch real-time underwriting quote
+const quote = await astra.getQuote({
+  asset: 'SOL',
+  amount: 5,
+  durationSeconds: 86400, // 24 hours
+  mode: 'depeg-shield',
+  floor: 95.00,
+});
+
+console.log(`Protected: $${quote.notional} | Premium Due: $${quote.totalDue} USDC`);
+
+// 2. Activate protection on-chain
+const tx = await astra.createProtectionPosition({
+  asset: 'SOL',
+  amount: 5,
+  floor: 95.00,
+  durationSeconds: 86400,
+});
+console.log('Position Active:', tx.positionId);</code></pre>
+      </section>
+
+      <!-- Section: Smart Contracts -->
+      <section id="contracts-arbitrum" class="doc-section">
+        <h2>Arbitrum Nitro Contracts (Solidity 0.8.24)</h2>
+        <table class="docs-table">
+          <thead>
+            <tr><th>Contract</th><th>Role</th><th>Key Function</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><code>AstraProtectionEngine.sol</code></td>
+              <td>Core engine for Rate Lock &amp; Depeg Shields</td>
+              <td><code>createPosition(asset, amount, duration, floor)</code></td>
+            </tr>
+            <tr>
+              <td><code>AstraReserveVault.sol</code></td>
+              <td>USDC liquidity pool, LP share minting &amp; fee splits</td>
+              <td><code>depositUnderwritingCapital(amount)</code></td>
+            </tr>
+            <tr>
+              <td><code>AstraOracleAdapter.sol</code></td>
+              <td>Pyth Network &amp; Chainlink real-time feeds</td>
+              <td><code>getPrice(asset)</code></td>
+            </tr>
+            <tr>
+              <td><code>AstraReceiptRegistry.sol</code></td>
+              <td>Zero-knowledge receipt verification (BN254)</td>
+              <td><code>verifyReceipt(paymentHash, proof)</code></td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <!-- Section: Solana Anchor -->
+      <section id="contracts-solana" class="doc-section">
+        <h2>Solana Anchor Program (Rust)</h2>
+        <p>Located in <code>contracts/solana/programs/astra/src/lib.rs</code>:</p>
+        <pre><code>// Solana Anchor Instruction: Create Position
+pub fn create_position(
+    ctx: Context&lt;CreatePosition&gt;,
+    amount: u64,
+    duration_seconds: i64,
+    mode: u8,
+    floor_price: u64,
+) -&gt; Result&lt;()&gt; {
+    // CPI Pyth price check &amp; underwriting capacity lock
+    ...
+}</code></pre>
+      </section>
+
+      <!-- Section: REST API -->
+      <section id="api-quotes" class="doc-section">
+        <h2>REST API Reference</h2>
+        
+        <h3>GET /api/v1/quote</h3>
+        <p>Computes risk premiums, fee splits, and capacity checks in real time:</p>
+        <pre><code>curl "http://localhost:4000/api/v1/quote?asset=SOL&amp;amount=5&amp;durationSeconds=86400"</code></pre>
+
+        <h3>GET /api/v1/history (Powered by Pyth Douro Labs)</h3>
+        <p>Returns 1000ms fixed-rate institutional historical prices directly from Pyth Network:</p>
+        <pre><code>curl "http://localhost:4000/api/v1/history?symbol=BTC"</code></pre>
+
+        <h3>POST /api/v1/positions</h3>
+        <p>Registers an open protection position across connected chains.</p>
+
+        <h3>POST /api/v1/receipts/register</h3>
+        <p>Generates an on-chain cryptographic receipt with BN254 zero-knowledge proof hash.</p>
+      </section>
+    </main>
+  </div>
+</body>
+</html>

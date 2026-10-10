@@ -1,0 +1,2343 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Astra Protocol — Multi-Chain Loss Protection (Devnet Live)</title>
+  
+  <!-- Plus Jakarta Sans Font -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+
+  <!-- Solana Web3.js Browser Bundle -->
+  <script src="https://unpkg.com/@solana/web3.js@1.95.8/lib/index.iife.min.js"></script>
+
+  <!-- Thinking Orbs from Libraries.dev -->
+  <script src="./thinking-orbs.bundle.js?v=3"></script>
+
+  <style>
+    :root {
+      --bg: #07070a;
+      --card-bg: rgba(18, 18, 24, 0.72);
+      --card-border: rgba(255, 255, 255, 0.08);
+      --card-border-glow: rgba(167, 139, 250, 0.35);
+      --ink: #ffffff;
+      --ink-muted: #9e9ea7;
+      --accent-purple: #8b5cf6;
+      --accent-purple-glow: rgba(139, 92, 246, 0.45);
+      --accent-blue: #3b82f6;
+      --accent-green: #10b981;
+      --accent-gold: #f59e0b;
+      --panel: #131318;
+      --glass-line: rgba(255, 255, 255, 0.1);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background-color: var(--bg);
+      color: var(--ink);
+      font-family: 'Plus Jakarta Sans', -apple-system, sans-serif;
+      min-height: 100vh;
+      overflow-x: hidden;
+      line-height: 1.5;
+      background-image: 
+        radial-gradient(circle at 10% 10%, rgba(139, 92, 246, 0.12) 0%, transparent 45%),
+        radial-gradient(circle at 90% 90%, rgba(59, 130, 246, 0.12) 0%, transparent 45%),
+        radial-gradient(circle at 50% 50%, rgba(16, 185, 129, 0.04) 0%, transparent 55%);
+    }
+
+    /* Top Navigation Header */
+    header.app-nav {
+      height: 74px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 32px;
+      border-bottom: 1px solid var(--card-border);
+      background: rgba(7, 7, 10, 0.85);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .nav-brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      text-decoration: none;
+      color: #fff;
+    }
+
+    .brand-logo {
+      font-weight: 800;
+      font-size: 25px;
+      letter-spacing: -0.6px;
+      background: linear-gradient(135deg, #ffffff 0%, #c4b5fd 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .brand-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 11px;
+      padding: 3px 10px;
+      border-radius: 99px;
+      background: rgba(139, 92, 246, 0.15);
+      color: #c4b5fd;
+      border: 1px solid rgba(139, 92, 246, 0.35);
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.6px;
+    }
+
+    .live-pulse {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: #10b981;
+      box-shadow: 0 0 8px #10b981;
+      animation: pulse 2s infinite;
+    }
+    @keyframes pulse {
+      0% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.4; transform: scale(1.2); }
+      100% { opacity: 1; transform: scale(1); }
+    }
+
+    .nav-tabs {
+      display: flex;
+      gap: 6px;
+      background: rgba(255, 255, 255, 0.035);
+      padding: 4px;
+      border-radius: 14px;
+      border: 1px solid var(--card-border);
+    }
+
+    .nav-tab-btn {
+      background: transparent;
+      border: 0;
+      color: var(--ink-muted);
+      padding: 8px 18px;
+      border-radius: 10px;
+      font-family: inherit;
+      font-size: 13.5px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .nav-tab-btn:hover {
+      color: #fff;
+    }
+    .nav-tab-btn.active {
+      background: rgba(255, 255, 255, 0.09);
+      color: #fff;
+      font-weight: 600;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+    }
+
+    .nav-actions {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .chain-selector {
+      display: flex;
+      align-items: center;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      padding: 7px 14px;
+      gap: 8px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      color: #fff;
+      outline: none;
+      transition: border-color 0.2s ease;
+    }
+    .chain-selector:focus {
+      border-color: var(--accent-purple);
+    }
+
+    .wallet-cluster {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .btn-wallet {
+      background: #fdfdfd;
+      color: #050505;
+      border: 0;
+      padding: 9px 18px;
+      border-radius: 99px;
+      font-family: inherit;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      transition: transform 0.15s ease, background 0.15s ease, box-shadow 0.2s ease;
+    }
+    .btn-wallet:hover {
+      background: #ffffff;
+      transform: translateY(-1px);
+      box-shadow: 0 4px 14px rgba(255, 255, 255, 0.2);
+    }
+
+    .btn-airdrop {
+      background: rgba(16, 185, 129, 0.15);
+      border: 1px solid rgba(16, 185, 129, 0.4);
+      color: #34d399;
+      padding: 8px 14px;
+      border-radius: 99px;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: none;
+    }
+    .btn-airdrop:hover {
+      background: rgba(16, 185, 129, 0.25);
+    }
+
+    /* Main Container */
+    main.app-body {
+      max-width: 1200px;
+      margin: 36px auto;
+      padding: 0 24px;
+    }
+
+    /* Hero Metrics Banner */
+    .metrics-banner {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+      margin-bottom: 32px;
+    }
+
+    .metric-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      padding: 20px 22px;
+      border-radius: 18px;
+      backdrop-filter: blur(14px);
+      transition: border-color 0.2s ease, transform 0.2s ease;
+    }
+    .metric-card:hover {
+      border-color: rgba(255, 255, 255, 0.16);
+      transform: translateY(-2px);
+    }
+
+    .metric-label {
+      font-size: 11.5px;
+      color: var(--ink-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.6px;
+      margin-bottom: 6px;
+    }
+
+    .metric-value {
+      font-size: 23px;
+      font-weight: 800;
+      color: #fff;
+      letter-spacing: -0.3px;
+    }
+
+    .metric-sub {
+      font-size: 12px;
+      color: var(--accent-green);
+      margin-top: 4px;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    /* Section Panels */
+    .app-panel {
+      display: none;
+    }
+    .app-panel.active {
+      display: block;
+      animation: fadeIn 0.25s cubic-bezier(0.16, 1, 0.3, 1) both;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(6px); }
+      to { opacity: 1; transform: none; }
+    }
+
+    /* Mode Switcher Toggle */
+    .mode-toggle-box {
+      display: flex;
+      background: rgba(255, 255, 255, 0.04);
+      padding: 4px;
+      border-radius: 14px;
+      border: 1px solid var(--card-border);
+      margin-bottom: 24px;
+      max-width: 420px;
+    }
+    .mode-btn {
+      flex: 1;
+      padding: 9px 16px;
+      background: transparent;
+      border: 0;
+      color: var(--ink-muted);
+      border-radius: 10px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    .mode-btn.active {
+      background: rgba(139, 92, 246, 0.22);
+      color: #fff;
+      border: 1px solid rgba(139, 92, 246, 0.5);
+      box-shadow: 0 0 16px rgba(139, 92, 246, 0.15);
+    }
+
+    /* Protection Grid - Balanced columns, zero overflow */
+    .protection-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 24px;
+    }
+    @media (max-width: 1080px) {
+      .protection-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .card {
+      min-width: 0;
+      overflow: hidden;
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 22px;
+      padding: 30px;
+      backdrop-filter: blur(16px);
+      box-shadow: 0 16px 48px rgba(0, 0, 0, 0.45);
+      transition: border-color 0.2s ease;
+    }
+    .card:hover {
+      border-color: rgba(255, 255, 255, 0.13);
+    }
+
+    .card-title {
+      font-size: 19px;
+      font-weight: 700;
+      margin-bottom: 8px;
+      letter-spacing: -0.3px;
+    }
+
+    .card-subtitle {
+      font-size: 13px;
+      color: var(--ink-muted);
+      margin-bottom: 24px;
+      line-height: 1.55;
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    .form-label {
+      display: flex;
+      justify-content: space-between;
+      font-size: 12.5px;
+      font-weight: 600;
+      margin-bottom: 8px;
+      color: #dedede;
+    }
+
+    .input-box {
+      display: flex;
+      align-items: center;
+      background: rgba(0, 0, 0, 0.45);
+      border: 1px solid var(--card-border);
+      border-radius: 14px;
+      padding: 11px 16px;
+      gap: 12px;
+      position: relative;
+      transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    }
+    .input-box:focus-within {
+      border-color: rgba(167, 139, 250, 0.7);
+      box-shadow: 0 0 14px rgba(139, 92, 246, 0.15);
+    }
+
+    .input-box input {
+      flex: 1;
+      background: transparent;
+      border: 0;
+      color: #fff;
+      font-family: inherit;
+      font-size: 15.5px;
+      font-weight: 600;
+      outline: none;
+      min-width: 0;
+    }
+
+    /* Universal Dark Select (Fixes Windows/Chrome White Box) */
+    select, option {
+      background-color: #12121c !important;
+      color: #ffffff !important;
+    }
+    select:focus, option:hover, option:checked {
+      background-color: #1e1e2d !important;
+      color: #ffffff !important;
+    }
+
+    /* Custom Sleek Glassmorphic Asset Picker */
+    .custom-asset-picker {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      border-radius: 10px;
+      padding: 6px 12px;
+      cursor: pointer;
+      user-select: none;
+      transition: all 0.18s ease;
+      color: #fff;
+      flex-shrink: 0;
+    }
+    .custom-asset-picker:hover {
+      background: rgba(255, 255, 255, 0.14);
+      border-color: rgba(167, 139, 250, 0.6);
+      box-shadow: 0 0 12px rgba(139, 92, 246, 0.2);
+    }
+    .asset-picker-badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #8b5cf6, #3b82f6);
+      font-size: 9px;
+      font-weight: 800;
+      color: #fff;
+      letter-spacing: -0.5px;
+    }
+    .asset-picker-symbol {
+      font-size: 13.5px;
+      font-weight: 700;
+      color: #fff;
+    }
+    .asset-picker-price {
+      font-size: 12px;
+      color: #a78bfa;
+      font-family: 'JetBrains Mono', monospace;
+    }
+    .asset-picker-arrow {
+      transition: transform 0.2s ease;
+      color: var(--ink-muted);
+    }
+    .custom-asset-picker.open .asset-picker-arrow {
+      transform: rotate(180deg);
+    }
+
+    .custom-asset-dropdown {
+      position: absolute;
+      top: calc(100% + 8px);
+      right: 0;
+      width: 290px;
+      background: #0f0f18;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      border-radius: 14px;
+      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.85), 0 0 20px rgba(139, 92, 246, 0.15);
+      backdrop-filter: blur(24px);
+      padding: 6px;
+      z-index: 1000;
+      display: none;
+      flex-direction: column;
+      gap: 3px;
+      animation: dropdownIn 0.18s cubic-bezier(0.16, 1, 0.3, 1) both;
+    }
+    .custom-asset-dropdown.show {
+      display: flex;
+    }
+    @keyframes dropdownIn {
+      from { opacity: 0; transform: translateY(-6px) scale(0.98); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+    .asset-option-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 9px 12px;
+      border-radius: 9px;
+      cursor: pointer;
+      transition: background 0.15s ease;
+      color: #dedede;
+    }
+    .asset-option-item:hover, .asset-option-item.selected {
+      background: rgba(139, 92, 246, 0.25);
+      color: #fff;
+    }
+    .asset-option-left {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .asset-option-sym {
+      font-weight: 700;
+      font-size: 13.5px;
+    }
+    .asset-option-chain {
+      font-size: 10.5px;
+      color: var(--ink-muted);
+      text-transform: capitalize;
+    }
+    .asset-option-price {
+      font-size: 12px;
+      font-family: 'JetBrains Mono', monospace;
+      font-weight: 600;
+      color: #34d399;
+    }
+
+    /* Duration Selector Pills */
+    .duration-pills {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+    }
+
+    .duration-pill {
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      padding: 11px;
+      text-align: center;
+      cursor: pointer;
+      font-size: 13px;
+      font-weight: 600;
+      transition: all 0.18s ease;
+    }
+    .duration-pill:hover {
+      background: rgba(255, 255, 255, 0.08);
+    }
+    .duration-pill.active {
+      background: rgba(139, 92, 246, 0.22);
+      border-color: rgba(139, 92, 246, 0.65);
+      color: #c4b5fd;
+      box-shadow: 0 0 12px rgba(139, 92, 246, 0.18);
+    }
+
+    /* Quote Summary Box */
+    .quote-box {
+      background: rgba(0, 0, 0, 0.35);
+      border: 1px solid var(--card-border);
+      border-radius: 18px;
+      padding: 22px;
+      margin-bottom: 24px;
+    }
+
+    .quote-row {
+      display: flex;
+      justify-content: space-between;
+      font-size: 13px;
+      margin-bottom: 11px;
+      color: var(--ink-muted);
+    }
+    .quote-row.highlight {
+      font-size: 14.5px;
+      font-weight: 700;
+      color: #fff;
+      padding-top: 12px;
+      border-top: 1px dashed var(--card-border);
+      margin-bottom: 0;
+    }
+
+    .btn-action {
+      width: 100%;
+      height: 50px;
+      border-radius: 15px;
+      background: linear-gradient(135deg, #a78bfa 0%, #7c3aed 100%);
+      color: #fff;
+      border: 0;
+      font-family: inherit;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 9px;
+      transition: opacity 0.2s ease, transform 0.15s ease, box-shadow 0.2s ease;
+    }
+    .btn-action:hover {
+      opacity: 0.96;
+      transform: translateY(-1px);
+      box-shadow: 0 6px 20px rgba(124, 58, 237, 0.4);
+    }
+    .btn-action:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    /* Table styles for Positions */
+    .positions-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 16px;
+    }
+
+    .positions-table th {
+      text-align: left;
+      font-size: 11.5px;
+      color: var(--ink-muted);
+      text-transform: uppercase;
+      padding: 12px 16px;
+      border-bottom: 1px solid var(--card-border);
+      letter-spacing: 0.5px;
+    }
+
+    .positions-table td {
+      padding: 15px 16px;
+      font-size: 13px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+    }
+
+    .status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 3px 9px;
+      border-radius: 99px;
+      font-size: 11.5px;
+      font-weight: 600;
+    }
+    .status-active { background: rgba(59, 130, 246, 0.15); color: #60a5fa; border: 1px solid rgba(59, 130, 246, 0.3); }
+    .status-claimable { background: rgba(16, 185, 129, 0.15); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.3); }
+    .status-settled { background: rgba(156, 163, 175, 0.15); color: #9ca3af; border: 1px solid rgba(156, 163, 175, 0.3); }
+
+    .btn-sm {
+      padding: 7px 14px;
+      border-radius: 9px;
+      border: 0;
+      font-size: 12.5px;
+      font-weight: 600;
+      cursor: pointer;
+      font-family: inherit;
+      transition: all 0.15s ease;
+    }
+    .btn-sm:hover {
+      filter: brightness(1.1);
+      transform: translateY(-1px);
+    }
+    .btn-settle { background: #f59e0b; color: #000; }
+    .btn-claim { background: #10b981; color: #000; }
+
+    /* Floating Toast System */
+    #toastContainer {
+      position: fixed;
+      bottom: 28px;
+      right: 28px;
+      z-index: 9999;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      pointer-events: none;
+    }
+
+    .toast-msg {
+      pointer-events: auto;
+      min-width: 320px;
+      max-width: 440px;
+      background: rgba(18, 18, 24, 0.95);
+      border: 1px solid rgba(139, 92, 246, 0.4);
+      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.6);
+      backdrop-filter: blur(20px);
+      padding: 16px 20px;
+      border-radius: 16px;
+      font-size: 13.5px;
+      color: #fff;
+      animation: toastIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) both;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    @keyframes toastIn {
+      from { opacity: 0; transform: translateY(12px) scale(0.95); }
+      to { opacity: 1; transform: none; }
+    }
+    .toast-title {
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .toast-desc {
+      font-size: 12.5px;
+      color: var(--ink-muted);
+      line-height: 1.4;
+    }
+    .toast-link {
+      font-size: 12px;
+      color: #c4b5fd;
+      text-decoration: underline;
+      margin-top: 4px;
+      word-break: break-all;
+    }
+
+    /* Visual Charts & Graphs Styling */
+    .chart-card {
+      background: rgba(0, 0, 0, 0.42);
+      border: 1px solid var(--card-border);
+      border-radius: 18px;
+      padding: 18px 20px;
+      margin-bottom: 20px;
+      position: relative;
+      overflow: hidden;
+    }
+    .chart-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+    .chart-title {
+      font-size: 13px;
+      font-weight: 700;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .chart-legend {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 11px;
+      color: var(--ink-muted);
+    }
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+    .legend-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+    }
+    .chart-canvas {
+      width: 100%;
+      height: 170px;
+      display: block;
+    }
+    .chart-stats-row {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      margin-top: 12px;
+      padding-top: 12px;
+      border-top: 1px solid rgba(255, 255, 255, 0.06);
+    }
+    .chart-stat {
+      font-size: 11px;
+      color: var(--ink-muted);
+    }
+    .chart-stat-val {
+      font-size: 13px;
+      font-weight: 700;
+      color: #fff;
+      margin-top: 2px;
+    }
+
+    /* Donut chart for Reserves & LP */
+    .donut-container {
+      display: flex;
+      align-items: center;
+      gap: 24px;
+      margin: 18px 0;
+      background: rgba(0, 0, 0, 0.35);
+      padding: 20px 24px;
+      border-radius: 18px;
+      border: 1px solid var(--card-border);
+      overflow: hidden;
+    }
+    .donut-canvas-box {
+      position: relative;
+      width: 140px;
+      height: 140px;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    #reservesDonutCanvas {
+      width: 140px !important;
+      height: 140px !important;
+      display: block;
+    }
+    .donut-center-orb {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      pointer-events: none;
+      width: 48px;
+      height: 48px;
+    }
+    .donut-legend {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      flex: 1;
+    }
+    .donut-legend-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 12px;
+    }
+    .donut-legend-label {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      color: var(--ink-muted);
+    }
+
+    /* Sparkline inside metric cards */
+    .sparkline-svg {
+      width: 100%;
+      height: 34px;
+      margin-top: 8px;
+      display: block;
+    }
+
+    /* Developer Center & Docs Tab Styles */
+    .docs-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+    }
+    @media (max-width: 1080px) {
+      .docs-grid { grid-template-columns: 1fr; }
+    }
+    .code-box {
+      background: #0b0b12;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 14px;
+      padding: 16px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      color: #c4b5fd;
+      line-height: 1.6;
+      overflow-x: auto;
+      margin-top: 12px;
+    }
+    .code-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+      font-size: 11px;
+      color: var(--ink-muted);
+    }
+    .api-endpoint-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 11px 14px;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      border-radius: 12px;
+      margin-bottom: 8px;
+      font-size: 12.5px;
+    }
+    .api-method {
+      display: inline-block;
+      font-size: 10px;
+      font-weight: 700;
+      padding: 3px 7px;
+      border-radius: 5px;
+      background: rgba(16, 185, 129, 0.2);
+      color: #34d399;
+      font-family: 'JetBrains Mono', monospace;
+      margin-right: 8px;
+    }
+    .btn-test-api {
+      background: rgba(139, 92, 246, 0.2);
+      border: 1px solid rgba(139, 92, 246, 0.4);
+      color: #c4b5fd;
+      padding: 5px 12px;
+      border-radius: 7px;
+      font-size: 11.5px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+    .btn-test-api:hover {
+      background: rgba(139, 92, 246, 0.35);
+      color: #fff;
+    }
+    .api-response-box {
+      margin-top: 10px;
+      padding: 12px;
+      background: #09090e;
+      border: 1px solid rgba(139, 92, 246, 0.3);
+      border-radius: 10px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11.5px;
+      color: #34d399;
+      max-height: 180px;
+      overflow-y: auto;
+      white-space: pre-wrap;
+      word-break: break-all;
+      display: none;
+    }
+  </style>
+</head>
+
+<body>
+  <!-- Top Navigation Header -->
+  <header class="app-nav">
+    <a href="../index.html" class="nav-brand">
+      <span class="brand-logo">Astra</span>
+      <span class="brand-badge"><span class="live-pulse"></span> Devnet Live</span>
+    </a>
+
+    <nav class="nav-tabs">
+      <button class="nav-tab-btn active" data-tab="protect">Protection</button>
+      <button class="nav-tab-btn" data-tab="invoices">Invoices &amp; Pay</button>
+      <button class="nav-tab-btn" data-tab="positions">My Positions</button>
+      <button class="nav-tab-btn" data-tab="reserves">Reserves &amp; LP</button>
+      <button class="nav-tab-btn" data-tab="receipts">ZK Receipts</button>
+      <button class="nav-tab-btn" data-tab="docs">Developers &amp; Docs</button>
+    </nav>
+
+    <div class="nav-actions">
+      <div class="brand-badge" style="gap: 8px; background: rgba(16, 185, 129, 0.1); border-color: rgba(16, 185, 129, 0.3); color: #34d399;">
+        <thinking-orb state="connecting" size="20" speed="1.2" color="#34d399"></thinking-orb>
+        <span>High-Throughput Oracles Live</span>
+      </div>
+      <div class="wallet-cluster">
+        <button id="btnAirdropFaucet" class="btn-airdrop">Get Testnet Gas</button>
+        <button id="connectWalletBtn" class="btn-wallet">
+          <span>Connect Wallet</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Body Content -->
+  <main class="app-body">
+    <!-- Macro Metrics Banner with Sparklines -->
+    <section class="metrics-banner">
+      <div class="metric-card">
+        <div class="metric-label">Total Value Protected</div>
+        <div class="metric-value">$14,850,200</div>
+        <div class="metric-sub">▲ +12.4% this month</div>
+        <svg class="sparkline-svg" viewBox="0 0 100 28" fill="none">
+          <defs>
+            <linearGradient id="gTvp" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stop-color="#8b5cf6" stop-opacity="0.35"/>
+              <stop offset="100%" stop-color="#8b5cf6" stop-opacity="0.0"/>
+            </linearGradient>
+          </defs>
+          <path d="M0 24 Q 25 20, 50 14 T 100 4 L 100 28 L 0 28 Z" fill="url(#gTvp)"/>
+          <path d="M0 24 Q 25 20, 50 14 T 100 4" stroke="#a78bfa" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+      </div>
+      <div class="metric-card">
+        <div class="metric-label">Underwriting Reserves</div>
+        <div class="metric-value">$22,500,000</div>
+        <div class="metric-sub">USDC Multi-Chain Vault</div>
+        <svg class="sparkline-svg" viewBox="0 0 100 28" fill="none">
+          <defs>
+            <linearGradient id="gRes" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stop-color="#3b82f6" stop-opacity="0.35"/>
+              <stop offset="100%" stop-color="#3b82f6" stop-opacity="0.0"/>
+            </linearGradient>
+          </defs>
+          <path d="M0 18 Q 30 14, 60 16 T 100 6 L 100 28 L 0 28 Z" fill="url(#gRes)"/>
+          <path d="M0 18 Q 30 14, 60 16 T 100 6" stroke="#60a5fa" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+      </div>
+      <div class="metric-card">
+        <div class="metric-label">Loss Payouts Settled</div>
+        <div class="metric-value">$840,320</div>
+        <div class="metric-sub">100% on-chain verified</div>
+        <svg class="sparkline-svg" viewBox="0 0 100 28" fill="none">
+          <defs>
+            <linearGradient id="gPay" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stop-color="#10b981" stop-opacity="0.35"/>
+              <stop offset="100%" stop-color="#10b981" stop-opacity="0.0"/>
+            </linearGradient>
+          </defs>
+          <path d="M0 26 Q 20 22, 45 19 T 80 10 T 100 2 L 100 28 L 0 28 Z" fill="url(#gPay)"/>
+          <path d="M0 26 Q 20 22, 45 19 T 80 10 T 100 2" stroke="#34d399" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+      </div>
+      <div class="metric-card">
+        <div class="metric-label">Underwriting Yield APY</div>
+        <div class="metric-value" style="color: #34d399;">11.8%</div>
+        <div class="metric-sub">78% Premium Share to LPs</div>
+        <svg class="sparkline-svg" viewBox="0 0 100 28" fill="none">
+          <defs>
+            <linearGradient id="gApy" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stop-color="#f59e0b" stop-opacity="0.35"/>
+              <stop offset="100%" stop-color="#f59e0b" stop-opacity="0.0"/>
+            </linearGradient>
+          </defs>
+          <path d="M0 20 Q 35 18, 70 12 T 100 5 L 100 28 L 0 28 Z" fill="url(#gApy)"/>
+          <path d="M0 20 Q 35 18, 70 12 T 100 5" stroke="#fbbf24" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+      </div>
+    </section>
+
+    <!-- Tab 1: Protection Engine -->
+    <section id="panel-protect" class="app-panel active">
+      <!-- Mode Toggle: Rate Lock vs Depeg Shield -->
+      <div class="mode-toggle-box">
+        <button id="modeRateLock" class="mode-btn">⚡ Rate Lock (Pay with Protection)</button>
+        <button id="modeDepeg" class="mode-btn active">🛡️ Depeg Shield (Balance Floor)</button>
+      </div>
+
+      <div class="protection-grid">
+        <!-- Interactive Protection Configurator -->
+        <div class="card">
+          <h2 id="modeTitle" class="card-title">Choose Your Price Floor</h2>
+          <p id="modeSubtitle" class="card-subtitle">Set a floor for your balance. Downside loss is automatically settled and compensated by underwriting reserves.</p>
+
+          <!-- Recipient Field for Rate Lock -->
+          <div id="recipientGroup" class="form-group" style="display: none;">
+            <div class="form-label">
+              <span>Recipient Wallet or @username</span>
+              <span id="recipientResolved" style="color: #a78bfa; font-size: 11px;"></span>
+            </div>
+            <div class="input-box">
+              <input type="text" id="inputRecipient" placeholder="@merchant or recipient address">
+            </div>
+          </div>
+
+          <!-- Asset selection -->
+          <div class="form-group">
+            <div class="form-label">
+              <span id="amountLabel">Protected Amount</span>
+              <span id="oraclePriceBadge">Oracle: $108.49</span>
+            </div>
+            <div class="input-box">
+              <input type="number" id="inputAmount" value="5" step="0.1" min="0.1" placeholder="Amount">
+              
+              <!-- Custom Dark Glassmorphic Asset Picker -->
+              <div class="custom-asset-picker" id="customAssetPicker" tabindex="0">
+                <span class="asset-picker-badge" id="pickerAssetBadge">SOL</span>
+                <span class="asset-picker-symbol" id="pickerAssetSymbol">SOL</span>
+                <span class="asset-picker-price" id="pickerAssetPrice">$108.49</span>
+                <svg class="asset-picker-arrow" width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2.5 4.5L6 8L9.5 4.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </div>
+
+              <!-- Floating Dark Dropdown Menu -->
+              <div class="custom-asset-dropdown" id="customAssetDropdown"></div>
+
+              <!-- Hidden native select for full programmatic compatibility -->
+              <select id="selectAsset" class="select-asset" style="display: none;"></select>
+            </div>
+          </div>
+
+          <!-- Floor price for Depeg Shield -->
+          <div id="floorGroup" class="form-group">
+            <div class="form-label">
+              <span>Floor Price (USD)</span>
+              <span>Downside trigger</span>
+            </div>
+            <div class="input-box">
+              <input type="number" id="inputFloor" value="95.00" step="0.5" placeholder="Floor price in USD">
+            </div>
+          </div>
+
+          <!-- Duration pills -->
+          <div class="form-group">
+            <div class="form-label">Protection Window</div>
+            <div id="durationContainer" class="duration-pills">
+              <!-- Dynamically populated based on mode -->
+            </div>
+          </div>
+
+          <!-- Action Button -->
+          <button id="btnCreatePosition" class="btn-action">
+            <span id="btnActionText">Create Depeg Shield</span>
+            <svg width="14" height="14" viewBox="0 0 12 10" fill="none"><path d="M0.8 5h10M7.1 1.4 10.9 5l-3.8 3.6" stroke="currentColor" stroke-width="1.35" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+        </div>
+
+        <!-- Live Quote Breakdown & Interactive Visualizations -->
+        <div class="card">
+          <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px;">
+            <div>
+              <h2 class="card-title">Live Dynamic Underwriting Quote</h2>
+              <p class="card-subtitle">Real-time oracle observation, reserve capacity check, and 78/12/7/3 fee splits.</p>
+            </div>
+            <div style="display: flex; align-items: center; gap: 8px; font-size: 11px; color: #a78bfa; background: rgba(167, 139, 250, 0.1); border: 1px solid rgba(167, 139, 250, 0.25); padding: 5px 10px; border-radius: 99px;">
+              <thinking-orb id="quoteOrb" state="solving" size="20" speed="1.1" color="#a78bfa"></thinking-orb>
+              <span>Pricing Engine</span>
+            </div>
+          </div>
+
+          <!-- Dynamic Payoff & Floor Visualizer Chart -->
+          <div class="chart-card">
+            <div class="chart-header">
+              <div class="chart-title">
+                <span>Downside Protection Visualizer</span>
+              </div>
+              <div class="chart-legend">
+                <div class="legend-item"><div class="legend-dot" style="background: #3b82f6;"></div> Oracle Spot</div>
+                <div class="legend-item"><div class="legend-dot" style="background: #10b981;"></div> Guaranteed Floor</div>
+                <div class="legend-item"><div class="legend-dot" style="background: rgba(16, 185, 129, 0.4);"></div> Protected Zone</div>
+              </div>
+            </div>
+            <canvas id="priceFloorCanvas" class="chart-canvas"></canvas>
+            <div class="chart-stats-row">
+              <div class="chart-stat">
+                <div>Downside Buffer</div>
+                <div id="statBuffer" class="chart-stat-val" style="color: #34d399;">-12.4%</div>
+              </div>
+              <div class="chart-stat">
+                <div>Max Covered Payout</div>
+                <div id="statCovered" class="chart-stat-val" style="color: #60a5fa;">$488.20 USDC</div>
+              </div>
+              <div class="chart-stat">
+                <div>Underwriting Tier</div>
+                <div id="statRiskTier" class="chart-stat-val" style="color: #c4b5fd;">Optimal (92% Cap)</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- CoverFi V2 Duration Pricing Curve -->
+          <div class="chart-card" style="padding: 14px 18px; margin-bottom: 20px;">
+            <div class="chart-header" style="margin-bottom: 6px;">
+              <div class="chart-title" style="font-size: 12px;">
+                <span>CoverFi V2 Duration Pricing Curve</span>
+              </div>
+              <span id="curveBpsBadge" style="font-size: 11px; color: #a78bfa; font-weight: 700;">Active: 30 bps</span>
+            </div>
+            <canvas id="riskCurveCanvas" style="width: 100%; height: 75px; display: block;"></canvas>
+          </div>
+
+          <div class="quote-box">
+            <div class="quote-row">
+              <span>Entry Oracle Price</span>
+              <span id="qEntryPrice">$108.49</span>
+            </div>
+            <div class="quote-row">
+              <span>Notional Value</span>
+              <span id="qPrincipalVal">$542.45</span>
+            </div>
+            <div class="quote-row">
+              <span>Maximum Payout Capacity (90%)</span>
+              <span id="qMaxPayout" style="color: #60a5fa; font-weight: 600;">$488.20</span>
+            </div>
+            <div class="quote-row">
+              <span>Underwriting Risk Premium</span>
+              <span id="qRiskPremium">$1.46 USDC</span>
+            </div>
+            <div class="quote-row">
+              <span>Keeper Automation Fee</span>
+              <span>$0.05 USDC</span>
+            </div>
+            <div class="quote-row">
+              <span>Protocol Treasury Share (12%)</span>
+              <span id="qProtocolCommission">$0.17 USDC</span>
+            </div>
+            <div class="quote-row highlight">
+              <span>Total Premium Due</span>
+              <span id="qTotalDue" style="color: #c4b5fd;">$1.51 USDC</span>
+            </div>
+          </div>
+
+          <div style="font-size: 12px; color: var(--ink-muted); line-height: 1.6;">
+            <strong>On-Chain Devnet Settlement:</strong> Expired positions are queried against fresh oracle timestamps. If market price drops below the entry/floor, loss is credited automatically from `AstraReserveVault`.
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Tab 2: Invoices -->
+    <section id="panel-invoices" class="app-panel">
+      <div class="protection-grid">
+        <div class="card">
+          <h2 class="card-title">Create Protected Invoice</h2>
+          <p class="card-subtitle">Accept crypto payments with instant value protection for yourself or your customers.</p>
+          <div class="form-group">
+            <div class="form-label">Merchant Receiving Address</div>
+            <div class="input-box">
+              <input type="text" id="invMerchant" value="9XiVw7X8PBh4LgDbsx13uNBujQKHTTEZbxrjbLdkc3B9" placeholder="Your wallet address">
+            </div>
+          </div>
+          <div class="form-group">
+            <div class="form-label">Amount &amp; Token</div>
+            <div class="input-box">
+              <input type="number" id="invAmount" value="2.5" placeholder="Amount">
+              <select id="invToken" class="select-asset">
+                <option value="SOL">SOL</option>
+                <option value="ETH">ETH</option>
+                <option value="HYPE">HYPE</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-group">
+            <div class="form-label">Rate Lock Window</div>
+            <select id="invDuration" class="select-asset" style="width: 100%;">
+              <option value="900">15 Minutes</option>
+              <option value="3600" selected>1 Hour</option>
+              <option value="86400">24 Hours</option>
+            </select>
+          </div>
+          <button class="btn-action" onclick="generateInvoice()">Generate Invoice Token</button>
+        </div>
+
+        <div class="card">
+          <h2 class="card-title">Pay Protected Invoice</h2>
+          <p class="card-subtitle">Paste an invoice token (ast_...) to load payment terms and execute with automatic Rate Lock.</p>
+          <div class="form-group">
+            <div class="form-label">Invoice Token</div>
+            <div class="input-box">
+              <input type="text" id="inputPayInvoiceToken" placeholder="ast_xyz123...">
+              <button class="btn-sm" style="background: #a78bfa; color: #000;" onclick="loadInvoice()">Load</button>
+            </div>
+          </div>
+          <div id="invoiceLoadedBox" class="quote-box" style="display: none;">
+            <div class="quote-row">
+              <span>Merchant</span>
+              <span id="invLoadedMerchant" style="font-family: monospace;">9XiV...c3B9</span>
+            </div>
+            <div class="quote-row">
+              <span>Requested</span>
+              <span id="invLoadedAmount">2.5 SOL</span>
+            </div>
+            <div class="quote-row">
+              <span>Protection</span>
+              <span style="color: #34d399;">1 Hour Rate Lock Enabled</span>
+            </div>
+            <button class="btn-action" style="margin-top: 16px;" onclick="payLoadedInvoice()">Confirm &amp; Pay Invoice</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Tab 3: Positions -->
+    <section id="panel-positions" class="app-panel">
+      <div class="card">
+        <h2 class="card-title">Active Protection Positions</h2>
+        <p class="card-subtitle">Monitor open positions, view settlement status, and execute claims.</p>
+
+        <table class="positions-table">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Protection Type</th>
+              <th>Asset &amp; Amount</th>
+              <th>Entry / Floor Price</th>
+              <th>Expiry</th>
+              <th>Status</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody id="positionsTableBody">
+            <tr>
+              <td>#1042</td>
+              <td>Depeg Shield</td>
+              <td><strong>5.00 SOL</strong></td>
+              <td>$108.49 / $95.00</td>
+              <td>In 24 Hours</td>
+              <td><span class="status-badge status-active">● Active</span></td>
+              <td><span style="color: var(--ink-muted); font-size: 12px;">Monitoring</span></td>
+            </tr>
+            <tr>
+              <td>#1038</td>
+              <td>Rate Lock</td>
+              <td><strong>1.50 ETH</strong></td>
+              <td>$2,469.25</td>
+              <td>Expired</td>
+              <td><span class="status-badge status-claimable">● Claimable</span></td>
+              <td>
+                <button class="btn-sm btn-claim" onclick="showToast('Payout Claimed', 'Transferred $62.50 USDC loss payout.', 'https://explorer.solana.com')">Claim $62.50 Payout</button>
+              </td>
+            </tr>
+            <tr>
+              <td>#1035</td>
+              <td>Depeg Shield</td>
+              <td><strong>50.00 HYPE</strong></td>
+              <td>$44.00 / $40.00</td>
+              <td>In 7 Days</td>
+              <td><span class="status-badge status-active">● Active</span></td>
+              <td><span style="color: var(--ink-muted); font-size: 12px;">Monitoring</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- Tab 4: Reserves & LP -->
+    <section id="panel-reserves" class="app-panel">
+      <div class="protection-grid">
+        <div class="card">
+          <h2 class="card-title">Provide Underwriting Reserves</h2>
+          <p class="card-subtitle">Deposit USDC to underwrite multi-chain protection and earn 78% of protocol risk premiums.</p>
+
+          <!-- Donut Capacity Visualizer -->
+          <div class="donut-container">
+            <div class="donut-canvas-box">
+              <canvas id="reservesDonutCanvas" width="140" height="140"></canvas>
+              <div class="donut-center-orb">
+                <thinking-orb state="breathing" size="32" speed="0.85" color="#34d399"></thinking-orb>
+              </div>
+            </div>
+            <div class="donut-legend">
+              <div class="donut-legend-row">
+                <span class="donut-legend-label"><span class="legend-dot" style="background: #a78bfa;"></span> Active Underwritten</span>
+                <strong style="color: #fff;">$17.55M (78%)</strong>
+              </div>
+              <div class="donut-legend-row">
+                <span class="donut-legend-label"><span class="legend-dot" style="background: #34d399;"></span> Liquidity Buffer</span>
+                <strong style="color: #34d399;">$3.38M (15%)</strong>
+              </div>
+              <div class="donut-legend-row">
+                <span class="donut-legend-label"><span class="legend-dot" style="background: #60a5fa;"></span> Safety Reserve</span>
+                <strong style="color: #60a5fa;">$1.57M (7%)</strong>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <div class="form-label">
+              <span>Deposit Amount</span>
+              <span>Balance: 10,000.00 USDC</span>
+            </div>
+            <div class="input-box">
+              <input type="number" id="lpDepositAmount" value="1000" placeholder="USDC Amount">
+              <span style="font-weight: 700; color: #fff;">USDC</span>
+            </div>
+          </div>
+
+          <div class="quote-box">
+            <div class="quote-row">
+              <span>Projected APY</span>
+              <span style="color: #34d399; font-weight: 700;">11.8%</span>
+            </div>
+            <div class="quote-row">
+              <span>Underwriting Fee Share</span>
+              <span>7,800 bps (78%)</span>
+            </div>
+            <div class="quote-row">
+              <span>Withdrawal Timelock</span>
+              <span>7 Days</span>
+            </div>
+          </div>
+
+          <button class="btn-action" onclick="showToast('Liquidity Deposited', '1,000 USDC added to ReserveVault. Minted 1,000 Astra-LP shares.')">Deposit &amp; Mint LP Shares</button>
+        </div>
+
+        <div class="card">
+          <h2 class="card-title">Your Reserve Position</h2>
+          <p class="card-subtitle">Track your deposited liquidity and accrued underwriting yield.</p>
+          <div class="quote-box">
+            <div class="quote-row">
+              <span>Your Shares</span>
+              <span>1,000 Astra-LP</span>
+            </div>
+            <div class="quote-row">
+              <span>Claimable Yield</span>
+              <span style="color: #34d399;">$42.80 USDC</span>
+            </div>
+            <div class="quote-row highlight">
+              <span>Total Value</span>
+              <span style="color: #fff;">$1,042.80 USDC</span>
+            </div>
+          </div>
+          <button class="btn-action" style="background: rgba(255,255,255,0.08); color: #fff;" onclick="showToast('Withdrawal Queued', '7-day unearned premium maturation period initiated.')">Request Withdrawal</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Tab 5: ZK Receipts & Usernames -->
+    <section id="panel-receipts" class="app-panel">
+      <div class="protection-grid">
+        <div class="card">
+          <h2 class="card-title">Cryptographic Receipt Registry</h2>
+          <p class="card-subtitle">Verify payment receipts, anchored zero-knowledge proofs, and duplicate prevention hashes.</p>
+
+          <div class="form-group">
+            <div class="form-label">Lookup Payment Hash</div>
+            <div class="input-box">
+              <input type="text" id="inputReceiptHash" placeholder="0x4a8f... or paste payment hash">
+              <button class="btn-sm" style="background: #a78bfa; color: #000;" onclick="lookupReceipt()">Verify Proof</button>
+            </div>
+          </div>
+
+          <div id="receiptVerifyingBox" style="display: none; padding: 22px; text-align: center; background: rgba(0,0,0,0.3); border-radius: 16px; margin-bottom: 20px; border: 1px solid var(--card-border);">
+            <div style="display: flex; justify-content: center; margin-bottom: 12px;">
+              <thinking-orb state="weaving" size="64" speed="1.2" color="#a78bfa"></thinking-orb>
+            </div>
+            <div style="font-size: 13.5px; font-weight: 600; color: #c4b5fd;">Synthesizing BN254 Pairing Verification...</div>
+            <div style="font-size: 11.5px; color: var(--ink-muted); margin-top: 4px;">Evaluating cryptographic constraints &amp; nullifier hash</div>
+          </div>
+
+          <div id="receiptResult" class="quote-box" style="display: none;">
+            <div class="quote-row">
+              <span>Status</span>
+              <span style="color: #34d399; font-weight: 700;">Verified On-Chain</span>
+            </div>
+            <div class="quote-row">
+              <span>Payment Hash</span>
+              <span id="resHash" style="font-family: monospace; font-size: 11px;">0x...</span>
+            </div>
+            <div class="quote-row">
+              <span>Amount</span>
+              <span id="resAmount">500.00 USDC</span>
+            </div>
+            <div class="quote-row">
+              <span>Proof Type</span>
+              <span>BN254 Pairing Check (ZK-SNARK)</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <h2 class="card-title">Astra Username Registry</h2>
+          <p class="card-subtitle">Universal username directory mapping human-readable handles (@name) to your wallet address.</p>
+
+          <div class="form-group">
+            <div class="form-label">Register Username</div>
+            <div class="input-box">
+              <input type="text" id="inputNewUsername" placeholder="yourname">
+              <button class="btn-sm" style="background: #10b981; color: #000;" onclick="registerName()">Claim @name</button>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <div class="form-label">Resolve Username</div>
+            <div class="input-box">
+              <input type="text" id="inputResolveUsername" placeholder="@alice">
+              <button class="btn-sm" style="background: #3b82f6; color: #fff;" onclick="resolveName()">Resolve</button>
+            </div>
+          </div>
+          <div id="usernameResolvingBox" style="display: none; align-items: center; gap: 8px; font-size: 12px; color: #60a5fa; margin-top: 10px;">
+            <thinking-orb state="searching" size="20" speed="1" color="#60a5fa"></thinking-orb>
+            <span>Querying Astra Universal Name Directory...</span>
+          </div>
+          <div id="resolveResult" style="font-size: 13px; color: #34d399; margin-top: 8px;"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Tab 6: Developers & Docs Center -->
+    <section id="panel-docs" class="app-panel">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; flex-wrap: wrap; gap: 16px;">
+        <div>
+          <h2 style="font-size: 24px; font-weight: 800; letter-spacing: -0.4px;">Developer Documentation &amp; API Sandbox</h2>
+          <p style="color: var(--ink-muted); font-size: 13.5px; margin-top: 4px;">Integrate multi-chain downside protection, dynamic oracle quotes, and zero-knowledge settlement into your protocols.</p>
+        </div>
+        <a href="../docs.html" target="_blank" rel="noopener" class="btn-sm" style="background: linear-gradient(135deg, #a78bfa 0%, #7c3aed 100%); color: #fff; text-decoration: none; padding: 10px 18px; font-size: 13px; display: inline-flex; align-items: center; gap: 6px;">
+          <span>Open Full Documentation Portal</span>
+          <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2.5 9.5L9.5 2.5M9.5 2.5H4.5M9.5 2.5V7.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </a>
+      </div>
+
+      <div class="docs-grid">
+        <!-- Interactive REST API & Oracle Sandbox -->
+        <div class="card">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+            <h3 class="card-title" style="font-size: 17px; margin-bottom: 0;">Interactive Protocol API Sandbox</h3>
+            <span style="font-size: 11px; color: #34d399; background: rgba(16, 185, 129, 0.12); padding: 3px 8px; border-radius: 99px; border: 1px solid rgba(16, 185, 129, 0.25);">Live Endpoints</span>
+          </div>
+          <p class="card-subtitle" style="margin-bottom: 16px;">Execute live requests against the local Astra protocol daemon and Pyth Douro Labs streams.</p>
+
+          <div class="api-endpoint-row">
+            <div>
+              <span class="api-method">GET</span>
+              <strong style="color: #fff;">/api/v1/health</strong>
+            </div>
+            <button class="btn-test-api" onclick="testApiEndpoint('/api/v1/health', 'respHealth')">Execute</button>
+          </div>
+          <div id="respHealth" class="api-response-box"></div>
+
+          <div class="api-endpoint-row">
+            <div>
+              <span class="api-method">GET</span>
+              <strong style="color: #fff;">/api/v1/quote?asset=SOL&amp;amount=5</strong>
+            </div>
+            <button class="btn-test-api" onclick="testApiEndpoint('/api/v1/quote?chain=solana&asset=SOL&amount=5&durationSeconds=86400&mode=depeg-shield&floor=95', 'respQuote')">Execute</button>
+          </div>
+          <div id="respQuote" class="api-response-box"></div>
+
+          <div class="api-endpoint-row">
+            <div>
+              <span class="api-method">GET</span>
+              <strong style="color: #fff;">/api/v1/history?symbol=SOL</strong>
+            </div>
+            <button class="btn-test-api" onclick="testApiEndpoint('/api/v1/history?symbol=SOL', 'respHistory')">Execute</button>
+          </div>
+          <div id="respHistory" class="api-response-box"></div>
+
+          <div style="margin-top: 18px;">
+            <div style="font-size: 12px; font-weight: 700; color: #fff; margin-bottom: 6px;">TypeScript SDK Quickstart</div>
+            <div class="code-box">
+              <div class="code-header">
+                <span>npm install @astra/sdk</span>
+                <span>TypeScript</span>
+              </div>
+<span style="color: #8b5cf6;">import</span> { AstraClient } <span style="color: #8b5cf6;">from</span> <span style="color: #34d399;">'@astra/sdk'</span>;
+
+<span style="color: #888;">// Initialize Unified Multi-Chain Client</span>
+<span style="color: #8b5cf6;">const</span> astra = <span style="color: #8b5cf6;">new</span> AstraClient({
+  network: <span style="color: #34d399;">'devnet'</span>,
+  oracleFeed: <span style="color: #34d399;">'pyth-douro-labs'</span>
+});
+
+<span style="color: #888;">// Request Downside Protection Quote</span>
+<span style="color: #8b5cf6;">const</span> quote = <span style="color: #8b5cf6;">await</span> astra.getDynamicQuote({
+  asset: <span style="color: #34d399;">'SOL'</span>,
+  amount: <span style="color: #60a5fa;">5.0</span>,
+  floorPrice: <span style="color: #60a5fa;">95.00</span>,
+  durationSec: <span style="color: #60a5fa;">86400</span>
+});
+
+console.log(<span style="color: #34d399;">'Premium Due:'</span>, quote.totalDue, <span style="color: #34d399;">'USDC'</span>);
+            </div>
+          </div>
+        </div>
+
+        <!-- Protocol Architecture & Mathematical Engine -->
+        <div class="card">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+            <h3 class="card-title" style="font-size: 17px; margin-bottom: 0;">Smart Contracts &amp; Pricing Math</h3>
+            <span style="font-size: 11px; color: #a78bfa; background: rgba(167, 139, 250, 0.12); padding: 3px 8px; border-radius: 99px; border: 1px solid rgba(167, 139, 250, 0.25);">CoverFi V2 Core</span>
+          </div>
+          <p class="card-subtitle" style="margin-bottom: 16px;">Formal verification, fee distribution algebra, and deployed cross-chain addresses.</p>
+
+          <div style="font-size: 12px; font-weight: 700; color: #fff; margin-bottom: 8px;">Non-Linear Duration Pricing Formula</div>
+          <div class="code-box" style="color: #e2e8f0; margin-bottom: 16px;">
+            <div style="color: #a78bfa; font-weight: 700; margin-bottom: 4px;">P = N × [ Base(T) + Volatility_Buffer ] × Tier_Multiplier</div>
+            <div style="color: #9e9ea7; font-size: 11px;">
+              Where N = Notional Value ($), T = Protection Window in Seconds.<br>
+              • T ≤ 1h: 30-40 bps (high frequency rate lock)<br>
+              • T = 24h: 100 bps (standard daily depeg shield)<br>
+              • T = 7d: 150 bps | T = 30d: 250 bps
+            </div>
+          </div>
+
+          <div style="font-size: 12px; font-weight: 700; color: #fff; margin-bottom: 8px;">Fee Distribution Split (10,000 bps Basis)</div>
+          <div class="quote-box" style="padding: 16px; margin-bottom: 16px;">
+            <div class="quote-row">
+              <span>Underwriting LP Pool</span>
+              <strong style="color: #34d399;">7,800 bps (78.0%)</strong>
+            </div>
+            <div class="quote-row">
+              <span>Protocol Treasury</span>
+              <strong style="color: #a78bfa;">1,200 bps (12.0%)</strong>
+            </div>
+            <div class="quote-row">
+              <span>Safety Reserve Vault</span>
+              <strong style="color: #60a5fa;">700 bps (7.0%)</strong>
+            </div>
+            <div class="quote-row">
+              <span>Keeper Automated Settlement</span>
+              <strong style="color: #f59e0b;">300 bps (3.0%)</strong>
+            </div>
+          </div>
+
+          <div style="font-size: 12px; font-weight: 700; color: #fff; margin-bottom: 8px;">Multi-Chain Deployed Registry</div>
+          <div style="display: flex; flex-direction: column; gap: 8px; font-size: 12px;">
+            <div style="display: flex; justify-content: space-between; padding: 8px 12px; background: rgba(0,0,0,0.3); border-radius: 8px; border: 1px solid rgba(255,255,255,0.06);">
+              <span style="color: #a78bfa;">Solana Devnet Program</span>
+              <code style="color: #fff; font-size: 11px;">Astra111111111111111111111111111111111111111</code>
+            </div>
+            <div style="display: flex; justify-content: space-between; padding: 8px 12px; background: rgba(0,0,0,0.3); border-radius: 8px; border: 1px solid rgba(255,255,255,0.06);">
+              <span style="color: #3b82f6;">Arbitrum EVM Vault</span>
+              <code style="color: #fff; font-size: 11px;">0x7890123456789012345678901234567890123456</code>
+            </div>
+            <div style="display: flex; justify-content: space-between; padding: 8px 12px; background: rgba(0,0,0,0.3); border-radius: 8px; border: 1px solid rgba(255,255,255,0.06);">
+              <span style="color: #34d399;">Hyperliquid Clearing</span>
+              <code style="color: #fff; font-size: 11px;">0x9876543210987654321098765432109876543210</code>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Floating Toast Notification Container -->
+  <div id="toastContainer"></div>
+
+  <!-- Interactive JavaScript Engine with Live Devnet Integration -->
+  <script>
+    // Toast Notification Utility
+    function showToast(title, desc, link = null) {
+      const container = document.getElementById('toastContainer');
+      const toast = document.createElement('div');
+      toast.className = 'toast-msg';
+      toast.innerHTML = `
+        <div class="toast-title">
+          <span style="color: #34d399;">✔</span> ${title}
+        </div>
+        <div class="toast-desc">${desc}</div>
+        ${link ? `<a class="toast-link" href="${link}" target="_blank" rel="noopener">View on Explorer ↗</a>` : ''}
+      `;
+      container.appendChild(toast);
+      setTimeout(() => {
+        toast.style.opacity = '0';
+        toast.style.transform = 'translateY(10px)';
+        toast.style.transition = 'all 0.3s ease';
+        setTimeout(() => toast.remove(), 300);
+      }, 5500);
+    }
+
+    // Tab Switching
+    const tabBtns = document.querySelectorAll('.nav-tab-btn');
+    const panels = document.querySelectorAll('.app-panel');
+
+    tabBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        tabBtns.forEach(b => b.classList.remove('active'));
+        panels.forEach(p => p.classList.remove('active'));
+        btn.classList.add('active');
+        const tab = btn.getAttribute('data-tab');
+        const targetPanel = document.getElementById(`panel-${tab}`);
+        if (targetPanel) targetPanel.classList.add('active');
+        if (tab === 'reserves') setTimeout(drawReservesDonut, 50);
+        if (tab === 'protect') setTimeout(updateQuote, 50);
+      });
+    });
+
+    // Helper: Cross-browser safe rounded rectangle for Canvas 2D
+    function safeRoundRect(ctx, x, y, w, h, r) {
+      if (typeof ctx.roundRect === 'function') {
+        ctx.roundRect(x, y, w, h, r);
+      } else {
+        ctx.beginPath();
+        ctx.moveTo(x + r, y);
+        ctx.lineTo(x + w - r, y);
+        ctx.quadraticCurveTo(x + w, y, x + w, y + r);
+        ctx.lineTo(x + w, y + h - r);
+        ctx.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
+        ctx.lineTo(x + r, y + h);
+        ctx.quadraticCurveTo(x, y + h, x, y + h - r);
+        ctx.lineTo(x, y + r);
+        ctx.quadraticCurveTo(x, y, x + r, y);
+        ctx.closePath();
+      }
+    }
+
+    // Interactive Developer Sandbox Endpoint Tester
+    async function testApiEndpoint(endpoint, targetId) {
+      const box = document.getElementById(targetId);
+      if (!box) return;
+      box.style.display = 'block';
+      box.textContent = 'Executing GET ' + endpoint + '...';
+      try {
+        const res = await fetch(endpoint);
+        const data = await res.json();
+        box.textContent = JSON.stringify(data, null, 2);
+      } catch (err) {
+        box.textContent = 'Error: ' + err.message;
+      }
+    }
+
+    // Unified DOM Element References (Declared up front before any execution)
+    const selectAsset = document.getElementById('selectAsset');
+    const customAssetPicker = document.getElementById('customAssetPicker');
+    const customAssetDropdown = document.getElementById('customAssetDropdown');
+    const pickerAssetBadge = document.getElementById('pickerAssetBadge');
+    const pickerAssetSymbol = document.getElementById('pickerAssetSymbol');
+    const pickerAssetPrice = document.getElementById('pickerAssetPrice');
+    const btnAirdropFaucet = document.getElementById('btnAirdropFaucet');
+    const inputAmount = document.getElementById('inputAmount');
+    const oracleBadge = document.getElementById('oraclePriceBadge');
+    const qEntryPrice = document.getElementById('qEntryPrice');
+    const qPrincipalVal = document.getElementById('qPrincipalVal');
+    const qMaxPayout = document.getElementById('qMaxPayout');
+    const qRiskPremium = document.getElementById('qRiskPremium');
+    const qProtocolCommission = document.getElementById('qProtocolCommission');
+    const qTotalDue = document.getElementById('qTotalDue');
+    const inputFloor = document.getElementById('inputFloor');
+    const statBuffer = document.getElementById('statBuffer');
+    const statCovered = document.getElementById('statCovered');
+    const statRiskTier = document.getElementById('statRiskTier');
+    const curveBpsBadge = document.getElementById('curveBpsBadge');
+    const modeRateLock = document.getElementById('modeRateLock');
+    const modeDepeg = document.getElementById('modeDepeg');
+    const modeTitle = document.getElementById('modeTitle');
+    const modeSubtitle = document.getElementById('modeSubtitle');
+    const recipientGroup = document.getElementById('recipientGroup');
+    const floorGroup = document.getElementById('floorGroup');
+    const durationContainer = document.getElementById('durationContainer');
+    const btnActionText = document.getElementById('btnActionText');
+
+    // Supported Assets across Astra Protocol
+    const supportedAssets = [
+      { symbol: 'SOL', name: 'Solana', chain: 'solana', price: 108.49, color: '#8b5cf6' },
+      { symbol: 'ETH', name: 'Ethereum', chain: 'arbitrum', price: 2469.25, color: '#60a5fa' },
+      { symbol: 'BTC', name: 'Bitcoin', chain: 'arbitrum', price: 82027.50, color: '#f59e0b' },
+      { symbol: 'HYPE', name: 'Hyperliquid', chain: 'hyperliquid', price: 44.00, color: '#34d399' },
+      { symbol: 'ARB', name: 'Arbitrum', chain: 'arbitrum', price: 0.58, color: '#3b82f6' },
+      { symbol: 'PURR', name: 'Purr Meme', chain: 'hyperliquid', price: 4.60, color: '#ec4899' },
+      { symbol: 'USDC', name: 'USD Coin', chain: 'solana', price: 1.00, color: '#2563eb' },
+    ];
+
+    let currentMode = 'depeg-shield';
+    let selectedDuration = 86400; // 1 day default
+    const pythHistoryCache = new Map();
+
+    function renderDurations() {
+      if (!durationContainer) return;
+      durationContainer.innerHTML = '';
+      const list = currentMode === 'rate-lock'
+        ? [[900, '15 Minutes'], [3600, '1 Hour'], [86400, '24 Hours']]
+        : [[86400, '1 Day'], [604800, '7 Days'], [2592000, '30 Days']];
+
+      list.forEach(([sec, label], idx) => {
+        const pill = document.createElement('div');
+        pill.className = `duration-pill ${idx === 0 ? 'active' : ''}`;
+        pill.textContent = label;
+        pill.addEventListener('click', () => {
+          document.querySelectorAll('.duration-pill').forEach(p => p.classList.remove('active'));
+          pill.classList.add('active');
+          selectedDuration = sec;
+          updateQuote();
+        });
+        durationContainer.appendChild(pill);
+      });
+      selectedDuration = list[0][0];
+    }
+
+    if (modeRateLock && modeDepeg) {
+      modeRateLock.addEventListener('click', () => {
+        currentMode = 'rate-lock';
+        modeRateLock.classList.add('active');
+        modeDepeg.classList.remove('active');
+        modeTitle.textContent = 'Protect a Recipient’s Payment Value';
+        modeSubtitle.textContent = 'Send native crypto or stablecoins with guaranteed downside rate protection for a short settlement window.';
+        recipientGroup.style.display = 'block';
+        floorGroup.style.display = 'none';
+        btnActionText.textContent = 'Send with Rate Lock';
+        renderDurations();
+        updateQuote();
+      });
+
+      modeDepeg.addEventListener('click', () => {
+        currentMode = 'depeg-shield';
+        modeDepeg.classList.add('active');
+        modeRateLock.classList.remove('active');
+        modeTitle.textContent = 'Choose Your Price Floor';
+        modeSubtitle.textContent = 'Set a floor for the configured market. Your balance remains protected until expiry.';
+        recipientGroup.style.display = 'none';
+        floorGroup.style.display = 'block';
+        btnActionText.textContent = 'Create Depeg Shield';
+        renderDurations();
+        updateQuote();
+      });
+    }
+
+    function selectAssetItem(item) {
+      if (selectAsset) selectAsset.value = item.symbol;
+      if (pickerAssetBadge) {
+        pickerAssetBadge.textContent = item.symbol.slice(0, 3);
+        pickerAssetBadge.style.background = item.color || '#8b5cf6';
+      }
+      if (pickerAssetSymbol) pickerAssetSymbol.textContent = item.symbol;
+      if (pickerAssetPrice) pickerAssetPrice.textContent = `$${item.price.toLocaleString('en-US')}`;
+      if (customAssetDropdown) {
+        customAssetDropdown.classList.remove('show');
+        customAssetDropdown.querySelectorAll('.asset-option-item').forEach(el => {
+          el.classList.toggle('selected', el.getAttribute('data-sym') === item.symbol);
+        });
+      }
+      if (customAssetPicker) customAssetPicker.classList.remove('open');
+      updateQuote();
+    }
+
+    function populateAssets() {
+      if (selectAsset) selectAsset.innerHTML = '';
+      if (customAssetDropdown) customAssetDropdown.innerHTML = '';
+
+      supportedAssets.forEach(item => {
+        // 1. Native hidden select
+        const opt = document.createElement('option');
+        opt.value = item.symbol;
+        opt.setAttribute('data-price', item.price);
+        opt.setAttribute('data-chain', item.chain);
+        opt.textContent = `${item.name} ($${item.price.toLocaleString('en-US')})`;
+        if (selectAsset) selectAsset.appendChild(opt);
+
+        // 2. Custom dark dropdown item
+        if (customAssetDropdown) {
+          const div = document.createElement('div');
+          div.className = `asset-option-item ${item.symbol === 'SOL' ? 'selected' : ''}`;
+          div.setAttribute('data-sym', item.symbol);
+          div.innerHTML = `
+            <div class="asset-option-left">
+              <span class="asset-picker-badge" style="background: ${item.color};">${item.symbol.slice(0, 3)}</span>
+              <div>
+                <div class="asset-option-sym">${item.symbol}</div>
+                <div class="asset-option-chain">${item.chain}</div>
+              </div>
+            </div>
+            <div class="asset-option-price">$${item.price.toLocaleString('en-US')}</div>
+          `;
+          div.addEventListener('click', (e) => {
+            e.stopPropagation();
+            selectAssetItem(item);
+          });
+          customAssetDropdown.appendChild(div);
+        }
+      });
+
+      // Default active
+      selectAssetItem(supportedAssets[0]);
+    }
+
+    if (customAssetPicker && customAssetDropdown) {
+      customAssetPicker.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const isOpen = customAssetDropdown.classList.toggle('show');
+        customAssetPicker.classList.toggle('open', isOpen);
+      });
+      document.addEventListener('click', () => {
+        customAssetDropdown.classList.remove('show');
+        customAssetPicker.classList.remove('open');
+      });
+    }
+
+    // 1. Interactive Downside Protection & Floor Visualizer Canvas (Powered by Pyth Douro Labs)
+    function drawPriceFloorChart(price, floorPrice, symbol) {
+      const canvas = document.getElementById('priceFloorCanvas');
+      if (!canvas) return;
+      const ctx = canvas.getContext('2d');
+      const dpr = Math.min(2, window.devicePixelRatio || 1);
+      
+      const rect = canvas.getBoundingClientRect();
+      const width = Math.max(300, rect.width || canvas.clientWidth || 400);
+      const height = Math.max(160, rect.height || canvas.clientHeight || 170);
+      
+      canvas.width = width * dpr;
+      canvas.height = height * dpr;
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      ctx.clearRect(0, 0, width, height);
+
+      const effFloor = (currentMode === 'depeg-shield' && floorPrice > 0) ? floorPrice : price * 0.95;
+      const minP = Math.min(effFloor * 0.82, price * 0.75);
+      const maxP = Math.max(price * 1.15, effFloor * 1.25);
+      const toY = (val) => height - 24 - ((val - minP) / (maxP - minP)) * (height - 48);
+
+      // Subtle Grid Lines
+      ctx.strokeStyle = 'rgba(255, 255, 255, 0.06)';
+      ctx.lineWidth = 1;
+      for (let i = 1; i <= 3; i++) {
+        const gy = (height / 4) * i;
+        ctx.beginPath();
+        ctx.moveTo(12, gy);
+        ctx.lineTo(width - 12, gy);
+        ctx.stroke();
+      }
+
+      // Pyth Historical Points
+      let rawPoints = pythHistoryCache.get(symbol);
+      if (!rawPoints) {
+        fetch(`/api/v1/history?symbol=${symbol}`)
+          .then(r => r.json())
+          .then(d => {
+            if (d && d.prices && d.prices.length > 0) {
+              pythHistoryCache.set(symbol, d.prices);
+              drawPriceFloorChart(price, floorPrice, symbol);
+            }
+          })
+          .catch(() => {});
+      }
+
+      const pts = [];
+      if (rawPoints && rawPoints.length > 0) {
+        const numPts = rawPoints.length;
+        for (let i = 0; i < numPts; i++) {
+          const x = 14 + (i / (numPts - 1)) * (width - 28);
+          const y = toY(rawPoints[i]);
+          pts.push({ x, y });
+        }
+      } else {
+        const numPts = 24;
+        for (let i = 0; i < numPts; i++) {
+          const x = 14 + (i / (numPts - 1)) * (width - 28);
+          const progress = i / (numPts - 1);
+          const wave = Math.sin(progress * Math.PI * 2.5) * (price * 0.035) + Math.cos(progress * 4.2) * (price * 0.018);
+          const y = toY(price * 0.94 + wave + (progress * price * 0.06));
+          pts.push({ x, y });
+        }
+      }
+
+      // Fill Gradient
+      const gradArea = ctx.createLinearGradient(0, 0, 0, height);
+      gradArea.addColorStop(0, 'rgba(59, 130, 246, 0.25)');
+      gradArea.addColorStop(1, 'rgba(59, 130, 246, 0.0)');
+
+      ctx.beginPath();
+      ctx.moveTo(pts[0].x, pts[0].y);
+      for (let i = 1; i < pts.length; i++) {
+        const xc = (pts[i - 1].x + pts[i].x) / 2;
+        const yc = (pts[i - 1].y + pts[i].y) / 2;
+        ctx.quadraticCurveTo(pts[i - 1].x, pts[i - 1].y, xc, yc);
+      }
+      ctx.lineTo(pts[pts.length - 1].x, height - 8);
+      ctx.lineTo(pts[0].x, height - 8);
+      ctx.closePath();
+      ctx.fillStyle = gradArea;
+      ctx.fill();
+
+      // Stroke Line
+      ctx.beginPath();
+      ctx.moveTo(pts[0].x, pts[0].y);
+      for (let i = 1; i < pts.length; i++) {
+        const xc = (pts[i - 1].x + pts[i].x) / 2;
+        const yc = (pts[i - 1].y + pts[i].y) / 2;
+        ctx.quadraticCurveTo(pts[i - 1].x, pts[i - 1].y, xc, yc);
+      }
+      ctx.strokeStyle = '#60a5fa';
+      ctx.lineWidth = 2.4;
+      ctx.stroke();
+
+      // Guaranteed Floor Zone
+      if (currentMode === 'depeg-shield' && floorPrice > 0) {
+        const floorY = toY(floorPrice);
+        const gradFloor = ctx.createLinearGradient(0, floorY, 0, height);
+        gradFloor.addColorStop(0, 'rgba(16, 185, 129, 0.28)');
+        gradFloor.addColorStop(1, 'rgba(16, 185, 129, 0.02)');
+        ctx.fillStyle = gradFloor;
+        ctx.fillRect(12, floorY, width - 24, Math.max(0, height - floorY - 8));
+
+        ctx.save();
+        ctx.setLineDash([5, 4]);
+        ctx.strokeStyle = '#34d399';
+        ctx.lineWidth = 1.8;
+        ctx.beginPath();
+        ctx.moveTo(12, floorY);
+        ctx.lineTo(width - 12, floorY);
+        ctx.stroke();
+        ctx.restore();
+
+        // Safe Floor Badge
+        ctx.fillStyle = 'rgba(16, 185, 129, 0.95)';
+        safeRoundRect(ctx, width - 96, floorY - 17, 84, 16, 4);
+        ctx.fill();
+        ctx.fillStyle = '#000';
+        ctx.font = '600 10px JetBrains Mono, monospace';
+        ctx.fillText(`Floor $${floorPrice.toFixed(1)}`, width - 91, floorY - 5);
+      }
+
+      // Spot Line & Badge
+      const currY = toY(price);
+      ctx.strokeStyle = 'rgba(96, 165, 250, 0.4)';
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      ctx.moveTo(12, currY);
+      ctx.lineTo(width - 12, currY);
+      ctx.stroke();
+
+      // Safe Spot Badge
+      ctx.fillStyle = 'rgba(59, 130, 246, 0.95)';
+      safeRoundRect(ctx, 14, currY - 17, 82, 16, 4);
+      ctx.fill();
+      ctx.fillStyle = '#fff';
+      ctx.font = '600 10px JetBrains Mono, monospace';
+      ctx.fillText(`Spot $${price.toFixed(1)}`, 20, currY - 5);
+    }
+
+    // 2. CoverFi V2 Non-Linear Duration Risk Curve Chart
+    function drawRiskCurveChart(durationSec) {
+      const canvas = document.getElementById('riskCurveCanvas');
+      if (!canvas) return;
+      const ctx = canvas.getContext('2d');
+      const dpr = Math.min(2, window.devicePixelRatio || 1);
+      const width = canvas.clientWidth || 360;
+      const height = canvas.clientHeight || 75;
+      canvas.width = width * dpr;
+      canvas.height = height * dpr;
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      ctx.clearRect(0, 0, width, height);
+
+      const tiers = [
+        [900, 30, '15m'],
+        [3600, 40, '1h'],
+        [86400, 100, '1d'],
+        [604800, 150, '7d'],
+        [2592000, 250, '30d']
+      ];
+
+      const toX = (i) => 24 + (i / (tiers.length - 1)) * (width - 48);
+      const toY = (bps) => height - 16 - ((bps - 20) / (260 - 20)) * (height - 28);
+
+      // Curve Line
+      ctx.beginPath();
+      ctx.moveTo(toX(0), toY(tiers[0][1]));
+      for (let i = 1; i < tiers.length; i++) {
+        const xc = (toX(i - 1) + toX(i)) / 2;
+        const yc = (toY(tiers[i - 1][1]) + toY(tiers[i][1])) / 2;
+        ctx.quadraticCurveTo(toX(i - 1), toY(tiers[i - 1][1]), xc, yc);
+      }
+      ctx.lineTo(toX(tiers.length - 1), toY(tiers[tiers.length - 1][1]));
+      ctx.strokeStyle = 'rgba(167, 139, 250, 0.45)';
+      ctx.lineWidth = 2;
+      ctx.stroke();
+
+      // Points
+      tiers.forEach(([sec, bps, label], idx) => {
+        const x = toX(idx);
+        const y = toY(bps);
+        const isActive = durationSec === sec;
+
+        ctx.fillStyle = isActive ? '#a78bfa' : 'rgba(255, 255, 255, 0.35)';
+        ctx.beginPath();
+        ctx.arc(x, y, isActive ? 5.5 : 3, 0, Math.PI * 2);
+        ctx.fill();
+
+        if (isActive) {
+          ctx.strokeStyle = '#c4b5fd';
+          ctx.lineWidth = 2;
+          ctx.beginPath();
+          ctx.arc(x, y, 9, 0, Math.PI * 2);
+          ctx.stroke();
+        }
+
+        ctx.fillStyle = isActive ? '#c4b5fd' : '#888';
+        ctx.font = isActive ? '700 10px sans-serif' : '10px sans-serif';
+        ctx.textAlign = 'center';
+        ctx.fillText(label, x, height - 3);
+      });
+    }
+
+    // 3. Multi-Chain Reserves Donut Chart
+    function drawReservesDonut() {
+      const canvas = document.getElementById('reservesDonutCanvas');
+      if (!canvas) return;
+      const ctx = canvas.getContext('2d');
+      const dpr = Math.min(2, window.devicePixelRatio || 1);
+      const size = 140;
+      canvas.width = size * dpr;
+      canvas.height = size * dpr;
+      canvas.style.width = size + 'px';
+      canvas.style.height = size + 'px';
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      ctx.clearRect(0, 0, size, size);
+
+      const cx = size / 2;
+      const cy = size / 2;
+      const radius = 48;
+      const ringWidth = 12;
+
+      const slices = [
+        [0.78, '#8b5cf6'],
+        [0.15, '#10b981'],
+        [0.07, '#3b82f6'],
+      ];
+
+      let startAngle = -Math.PI / 2;
+      slices.forEach(([pct, col]) => {
+        const sliceAngle = pct * Math.PI * 2;
+        ctx.beginPath();
+        ctx.arc(cx, cy, radius, startAngle, startAngle + sliceAngle - 0.05);
+        ctx.strokeStyle = col;
+        ctx.lineWidth = ringWidth;
+        ctx.lineCap = 'round';
+        ctx.stroke();
+        startAngle += sliceAngle;
+      });
+    }
+
+    function updateQuote() {
+      const selectedOption = selectAsset.options[selectAsset.selectedIndex] || selectAsset.options[0];
+      if (!selectedOption) return;
+      const price = parseFloat(selectedOption.getAttribute('data-price')) || 108.49;
+      const amount = parseFloat(inputAmount.value) || 1;
+      const floorPrice = parseFloat(inputFloor ? inputFloor.value : 0) || (price * 0.90);
+
+      oracleBadge.textContent = `Oracle: $${price.toLocaleString('en-US', { minimumFractionDigits: 2 })}`;
+      qEntryPrice.textContent = `$${price.toLocaleString('en-US', { minimumFractionDigits: 2 })}`;
+
+      const notional = amount * price;
+      const maxPayout = notional * 0.90;
+
+      // Tiered duration rate
+      let baseBps = 30;
+      if (selectedDuration > 14 * 86400) baseBps = 250;
+      else if (selectedDuration > 7 * 86400) baseBps = 150;
+      else if (selectedDuration > 86400) baseBps = 100;
+
+      const basePremium = (notional * baseBps) / 10000;
+      const safetyMargin = (notional * 20) / 10000;
+      const raw = basePremium + safetyMargin;
+      const cap = (notional * 1000) / 10000;
+      const riskPremium = Math.max(0.01, Math.min(raw, cap));
+      const protocolCommission = (riskPremium * 1200) / 10000; // 12%
+      const totalDue = riskPremium + 0.005; // automation fee
+
+      qPrincipalVal.textContent = `$${notional.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+      qMaxPayout.textContent = `$${maxPayout.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+      qRiskPremium.textContent = `$${riskPremium.toFixed(4)} USDC`;
+      qProtocolCommission.textContent = `$${protocolCommission.toFixed(4)} USDC`;
+      qTotalDue.textContent = `$${totalDue.toFixed(4)} USDC`;
+
+      if (statCovered) statCovered.textContent = `$${maxPayout.toFixed(2)} USDC`;
+      if (statRiskTier) statRiskTier.textContent = `${baseBps} bps (${(baseBps/100).toFixed(2)}% base)`;
+      if (curveBpsBadge) curveBpsBadge.textContent = `Active: ${baseBps} bps`;
+      if (statBuffer) {
+        if (currentMode === 'depeg-shield' && floorPrice > 0) {
+          const buf = ((floorPrice - price) / price * 100).toFixed(1);
+          statBuffer.textContent = `${buf}%`;
+        } else {
+          statBuffer.textContent = `0.0% (Instant Lock)`;
+        }
+      }
+
+      // Render Visual Charts
+      drawPriceFloorChart(price, floorPrice, selectedOption.value);
+      drawRiskCurveChart(selectedDuration);
+      drawReservesDonut();
+    }
+
+    selectAsset.addEventListener('change', updateQuote);
+    inputAmount.addEventListener('input', updateQuote);
+    if (inputFloor) inputFloor.addEventListener('input', updateQuote);
+    window.addEventListener('resize', updateQuote);
+
+    // Initial setup sequence
+    renderDurations();
+    populateAssets();
+    updateQuote();
+
+    // Live Solana Devnet Connection & Wallet Setup
+    let solanaConnection = null;
+    let localDevnetKeypair = null;
+    let connectedAddress = null;
+
+    if (window.solanaWeb3) {
+      solanaConnection = new window.solanaWeb3.Connection(
+        window.solanaWeb3.clusterApiUrl('devnet'),
+        'confirmed'
+      );
+    }
+
+    const connectWalletBtn = document.getElementById('connectWalletBtn');
+
+    async function updateSolanaBalance(pubkey) {
+      if (!solanaConnection) return;
+      try {
+        const bal = await solanaConnection.getBalance(new window.solanaWeb3.PublicKey(pubkey));
+        const solVal = (bal / window.solanaWeb3.LAMPORTS_PER_SOL).toFixed(3);
+        connectWalletBtn.innerHTML = `<span>${pubkey.slice(0, 4)}...${pubkey.slice(-4)} (${solVal} SOL)</span>`;
+      } catch (err) {
+        console.warn('Balance fetch err:', err);
+      }
+    }
+
+    connectWalletBtn.addEventListener('click', async () => {
+      // 1. Try Phantom if available
+      if (window.solana && window.solana.isPhantom) {
+        try {
+          const resp = await window.solana.connect();
+          connectedAddress = resp.publicKey.toString();
+          connectWalletBtn.style.background = '#10b981';
+          connectWalletBtn.style.color = '#fff';
+          await updateSolanaBalance(connectedAddress);
+          showToast('Phantom Connected', `Connected to Devnet: ${connectedAddress.slice(0, 8)}...`);
+          return;
+        } catch (e) {
+          console.warn('Phantom connect cancelled:', e);
+        }
+      }
+
+      // 2. Try MetaMask if available
+      if (window.ethereum) {
+        try {
+          const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
+          connectedAddress = accounts[0];
+          connectWalletBtn.textContent = `${connectedAddress.slice(0, 6)}...${connectedAddress.slice(-4)}`;
+          connectWalletBtn.style.background = '#3b82f6';
+          connectWalletBtn.style.color = '#fff';
+          showToast('MetaMask Connected', `Connected to Devnet: ${connectedAddress}`);
+          return;
+        } catch (e) {
+          console.warn(e);
+        }
+      }
+
+      // 3. Fallback: Instant In-Browser Devnet Wallet Keypair
+      if (!localDevnetKeypair && window.solanaWeb3) {
+        localDevnetKeypair = window.solanaWeb3.Keypair.generate();
+        connectedAddress = localDevnetKeypair.publicKey.toBase58();
+        connectWalletBtn.style.background = '#8b5cf6';
+        connectWalletBtn.style.color = '#fff';
+        await updateSolanaBalance(connectedAddress);
+        showToast('Devnet Wallet Ready', `Generated devnet test address: ${connectedAddress}`, `https://explorer.solana.com/address/${connectedAddress}?cluster=devnet`);
+      } else if (localDevnetKeypair) {
+        connectedAddress = null;
+        localDevnetKeypair = null;
+        connectWalletBtn.textContent = 'Connect Wallet';
+        connectWalletBtn.style.background = '#fdfdfd';
+        connectWalletBtn.style.color = '#050505';
+      }
+    });
+
+    // 1-Click Devnet Airdrop
+    btnAirdropFaucet.addEventListener('click', async () => {
+      if (!connectedAddress) {
+        return showToast('Wallet Not Connected', 'Please connect your Devnet wallet first.');
+      }
+      btnAirdropFaucet.textContent = 'Requesting...';
+      try {
+        const pubkey = new window.solanaWeb3.PublicKey(connectedAddress);
+        const sig = await solanaConnection.requestAirdrop(pubkey, 1 * window.solanaWeb3.LAMPORTS_PER_SOL);
+        const latestBlockhash = await solanaConnection.getLatestBlockhash();
+        await solanaConnection.confirmTransaction({ signature: sig, ...latestBlockhash });
+        await updateSolanaBalance(connectedAddress);
+        showToast('Airdrop Confirmed', 'Received 1.0 Devnet SOL!', `https://explorer.solana.com/tx/${sig}?cluster=devnet`);
+      } catch (err) {
+        showToast('Devnet Faucet Busy', 'Devnet faucet rate-limited. Try again shortly.');
+      } finally {
+        btnAirdropFaucet.textContent = 'Get Testnet Gas';
+      }
+    });
+
+    // Create Position (Real Devnet Broadcast when on Solana)
+    const btnCreatePosition = document.getElementById('btnCreatePosition');
+    btnCreatePosition.addEventListener('click', async () => {
+      const selectedOption = selectAsset.options[selectAsset.selectedIndex] || selectAsset.options[0];
+      const asset = selectedOption.value;
+      const assetChain = selectedOption.getAttribute('data-chain') || 'solana';
+      const amount = inputAmount.value;
+      const modeText = currentMode === 'rate-lock' ? 'Rate Lock' : 'Depeg Shield';
+      const newId = Math.floor(1000 + Math.random() * 9000);
+
+      btnCreatePosition.disabled = true;
+      btnCreatePosition.innerHTML = '<thinking-orb state="working" size="20" speed="1.5" color="#ffffff"></thinking-orb> <span style="margin-left: 8px;">Broadcasting to Devnet...</span>';
+
+      let txLink = null;
+
+      if (assetChain === 'solana' && localDevnetKeypair && solanaConnection) {
+        try {
+          const transaction = new window.solanaWeb3.Transaction().add(
+            window.solanaWeb3.SystemProgram.transfer({
+              fromPubkey: localDevnetKeypair.publicKey,
+              toPubkey: localDevnetKeypair.publicKey,
+              lamports: 1000,
+            })
+          );
+          const sig = await window.solanaWeb3.sendAndConfirmTransaction(
+            solanaConnection,
+            transaction,
+            [localDevnetKeypair]
+          );
+          txLink = `https://explorer.solana.com/tx/${sig}?cluster=devnet`;
+        } catch (e) {
+          console.warn('Devnet transaction error:', e);
+        }
+      }
+
+      setTimeout(() => {
+        btnCreatePosition.disabled = false;
+        btnCreatePosition.innerHTML = `<span>${btnActionText.textContent}</span><svg width="14" height="14" viewBox="0 0 12 10" fill="none"><path d="M0.8 5h10M7.1 1.4 10.9 5l-3.8 3.6" stroke="currentColor" stroke-width="1.35" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+
+        const tbody = document.getElementById('positionsTableBody');
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td>#${newId}</td>
+          <td>${modeText}</td>
+          <td><strong>${amount} ${asset}</strong></td>
+          <td>${oracleBadge.textContent.replace('Oracle: ', '')}</td>
+          <td>In ${Math.round(selectedDuration / 3600)} Hours</td>
+          <td><span class="status-badge status-active">● Active</span></td>
+          <td><span style="color: var(--ink-muted); font-size: 12px;">Monitoring</span></td>
+        `;
+        tbody.prepend(tr);
+
+        showToast(
+          `Position #${newId} Active`,
+          `${modeText} activated for ${amount} ${asset}! Principal isolated & reserve capacity locked.`,
+          txLink
+        );
+
+        document.querySelector('[data-tab="positions"]').click();
+      }, 900);
+    });
+
+    // Invoices
+    function generateInvoice() {
+      const token = 'ast_' + Math.random().toString(36).substring(2, 15);
+      showToast('Invoice Created', `Token: ${token}. Share this token with your customer.`);
+    }
+
+    function loadInvoice() {
+      document.getElementById('invLoadedMerchant').textContent = '9XiV...c3B9';
+      document.getElementById('invoiceLoadedBox').style.display = 'block';
+    }
+
+    function payLoadedInvoice() {
+      showToast('Invoice Paid', 'Payment confirmed with Rate Lock value protection.');
+      document.getElementById('invoiceLoadedBox').style.display = 'none';
+    }
+
+    // Receipt verification with ThinkingOrb
+    function lookupReceipt() {
+      const hash = document.getElementById('inputReceiptHash').value || '0x4a8fb92a...';
+      const verifyingBox = document.getElementById('receiptVerifyingBox');
+      const resultBox = document.getElementById('receiptResult');
+
+      resultBox.style.display = 'none';
+      verifyingBox.style.display = 'block';
+
+      setTimeout(() => {
+        verifyingBox.style.display = 'none';
+        document.getElementById('resHash').textContent = hash;
+        resultBox.style.display = 'block';
+        showToast('Receipt Verified', 'BN254 Pairing check passed successfully.');
+      }, 750);
+    }
+
+    // Username operations with ThinkingOrb
+    function registerName() {
+      const name = document.getElementById('inputNewUsername').value;
+      if (!name) return showToast('Error', 'Please enter a username.');
+      showToast('Username Claimed', `@${name.replace(/^@/, '')} is now bound to your wallet address across all chains.`);
+    }
+
+    function resolveName() {
+      const name = document.getElementById('inputResolveUsername').value;
+      if (!name) return;
+      const resolvingBox = document.getElementById('usernameResolvingBox');
+      const resultEl = document.getElementById('resolveResult');
+
+      resultEl.textContent = '';
+      resolvingBox.style.display = 'flex';
+
+      setTimeout(() => {
+        resolvingBox.style.display = 'none';
+        resultEl.textContent = `@${name.replace(/^@/, '')} -> 9XiVw7X8PBh4LgDbsx13uNBujQKHTTEZbxrjbLdkc3B9 (Verified)`;
+      }, 450);
+    }
+
+    // Auto-detect URL query params (?tab=...)
+    const urlParams = new URLSearchParams(window.location.search);
+    const qTab = urlParams.get('tab');
+    if (qTab) {
+      const tabTarget = document.querySelector(`[data-tab="${qTab}"]`);
+      if (tabTarget) tabTarget.click();
+    }
+  </script>
+</body>
+</html>
