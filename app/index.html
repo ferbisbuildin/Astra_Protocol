@@ -862,6 +862,20 @@
       overflow-x: auto;
       margin-top: 12px;
     }
+    .code-box pre {
+      margin: 0;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      line-height: 1.7;
+      white-space: pre;
+      overflow-x: auto;
+    }
+    .code-box code {
+      font-family: inherit;
+      background: transparent;
+      padding: 0;
+      color: inherit;
+    }
     .code-header {
       display: flex;
       justify-content: space-between;
@@ -1734,26 +1748,33 @@
             <div style="font-size: 12px; font-weight: 700; color: #fff; margin-bottom: 6px;">TypeScript SDK Quickstart</div>
             <div class="code-box">
               <div class="code-header">
-                <span>npm install @astra/sdk</span>
-                <span>TypeScript</span>
+                <span style="display: flex; align-items: center; gap: 8px;">
+                  <span style="color: #10b981; font-weight: 700;">$</span> npm install @astra/sdk
+                </span>
+                <span style="display: flex; align-items: center; gap: 8px;">
+                  <button class="btn-copy-code" onclick="navigator.clipboard.writeText('npm install @astra/sdk'); showToast('Copied', 'Package install command copied to clipboard.');" style="background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.12); border-radius: 6px; color: #fff; font-size: 10px; padding: 2px 8px; cursor: pointer;">Copy</button>
+                  <span style="color: #60a5fa; font-weight: 600;">TypeScript</span>
+                </span>
               </div>
-<span style="color: #8b5cf6;">import</span> { AstraClient } <span style="color: #8b5cf6;">from</span> <span style="color: #34d399;">'@astra/sdk'</span>;
+              <pre><code><span style="color: #8b5cf6;">import</span> { AstraClient } <span style="color: #8b5cf6;">from</span> <span style="color: #34d399;">'@astra/sdk'</span>;
 
-<span style="color: #888;">// Initialize Unified Multi-Chain Client</span>
+<span style="color: #64748b;">// Initialize Unified Multi-Chain Client (Testnet)</span>
 <span style="color: #8b5cf6;">const</span> astra = <span style="color: #8b5cf6;">new</span> AstraClient({
-  network: <span style="color: #34d399;">'devnet'</span>,
-  oracleFeed: <span style="color: #34d399;">'pyth-douro-labs'</span>
+  endpoint: <span style="color: #34d399;">'http://localhost:4000'</span>,
+  defaultChain: <span style="color: #34d399;">'solana'</span>
 });
 
-<span style="color: #888;">// Request Downside Protection Quote</span>
-<span style="color: #8b5cf6;">const</span> quote = <span style="color: #8b5cf6;">await</span> astra.getDynamicQuote({
+<span style="color: #64748b;">// Request Live Downside Protection Quote</span>
+<span style="color: #8b5cf6;">const</span> quote = <span style="color: #8b5cf6;">await</span> astra.getQuote({
+  chain: <span style="color: #34d399;">'solana'</span>,
   asset: <span style="color: #34d399;">'SOL'</span>,
   amount: <span style="color: #60a5fa;">5.0</span>,
   floorPrice: <span style="color: #60a5fa;">95.00</span>,
-  durationSec: <span style="color: #60a5fa;">86400</span>
+  durationSeconds: <span style="color: #60a5fa;">86400</span>,
+  mode: <span style="color: #34d399;">'depeg-shield'</span>
 });
 
-console.log(<span style="color: #34d399;">'Premium Due:'</span>, quote.totalDue, <span style="color: #34d399;">'USDC'</span>);
+console.log(<span style="color: #34d399;">'Total Premium Due:'</span>, quote.totalDue, <span style="color: #34d399;">'USDC'</span>);</code></pre>
             </div>
           </div>
         </div>

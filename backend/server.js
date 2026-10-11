@@ -606,7 +606,21 @@ app.get('/api/v1/history', async (req, res) => {
   });
 });
 
-app.listen(config.port, () => {
-  console.log(`[Astra Backend] Server active at http://localhost:${config.port}`);
-  keeper.start();
+// Keeper sweep endpoint for Vercel Cron or serverless invocation
+app.get(['/api/v1/keeper/sweep', '/api/cron/keeper'], async (req, res) => {
+  try {
+    await keeper.sweepExpiredPositions();
+    res.json({ success: true, timestamp: Date.now(), message: 'Astra keeper sweep executed successfully.' });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
 });
+
+if (process.env.NODE_ENV !== 'test' && !process.env.VERCEL) {
+  app.listen(config.port, () => {
+    console.log(`[Astra Backend] Server active at http://localhost:${config.port}`);
+    keeper.start();
+  });
+}
+
+export default app;
