@@ -12,9 +12,9 @@ import { fileURLToPath } from 'url';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-const ALCHEMY_KEY = 'xKXsByrKTiXIj4uNXuzAizQN2hXM354l';
-const ARB_SEPOLIA_RPC = `https://arb-sepolia.g.alchemy.com/v2/${ALCHEMY_KEY}`;
-const ARB_MAINNET_RPC = `https://arb-mainnet.g.alchemy.com/v2/${ALCHEMY_KEY}`;
+const ALCHEMY_KEY = process.env.ALCHEMY_API_KEY || '';
+const ARB_SEPOLIA_RPC = ALCHEMY_KEY ? `https://arb-sepolia.g.alchemy.com/v2/${ALCHEMY_KEY}` : 'https://sepolia-rollup.arbitrum.io/rpc';
+const ARB_MAINNET_RPC = ALCHEMY_KEY ? `https://arb-mainnet.g.alchemy.com/v2/${ALCHEMY_KEY}` : 'https://arb1.arbitrum.io/rpc';
 const PYTH_HERMES_URL = 'https://hermes.pyth.network/v2/updates/price/latest';
 
 async function setup() {

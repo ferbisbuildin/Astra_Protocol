@@ -566,11 +566,11 @@ app.get('/api/v1/history', async (req, res) => {
   if (pythSymbol) {
     try {
       const now = Math.floor(Date.now() / 1000);
-      const from = now - (14 * 86400); // 14 days
       const url = `https://pyth.dourolabs.app/v1/fixed_rate@1000ms/history?symbol=${encodeURIComponent(pythSymbol)}&from=${from}&to=${now}&resolution=1D`;
-      const response = await fetch(url, {
-        headers: { 'Authorization': 'Bearer 4mM6CGdUVyhareZiR8MHKUJKAyeH7E8gSamuuDPgKFBE' },
-      });
+      const headers = process.env.PYTH_DOURO_API_KEY 
+        ? { 'Authorization': `Bearer ${process.env.PYTH_DOURO_API_KEY}` }
+        : {};
+      const response = await fetch(url, { headers });
       if (response.ok) {
         const data = await response.json();
         if (data.c && data.c.length > 0) {

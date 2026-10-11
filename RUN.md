@@ -1,151 +1,117 @@
-# Astra Protocol — Execution & Deployment Guide (RUN.md)
+# Astra Protocol — Execution, Testing & Deployment Guide (RUN.md)
 
-Astra Protocol is a unified cross-chain DeFi downside protection and loss-underwriting protocol engineered across **Solana**, **Arbitrum One**, and **Hyperliquid**.
-
----
-
-## 1. Architecture & Directory Overview
-
-```text
-├── index.html               # Cinematic landing page with Plus Jakarta Sans & video background
-├── docs.html                # Dedicated Developer Documentation & API Portal
-├── app/
-│   ├── index.html           # Unified Web3 Application (Dynamic quotes, ZK receipts, Reserves & LP)
-│   ├── thinking-orbs.bundle.js # Thinking Orbs interactive AI/quantum state animations
-│   └── ...
-├── backend/
-│   ├── server.js            # Express API daemon, Pyth Douro Labs stream proxy, & static host
-│   ├── config.js            # Unified multi-chain configuration & RPC endpoints
-│   ├── services/
-│   │   ├── oracle_service.js    # Multi-source price aggregation (Hermes, Douro Labs, Hyperliquid)
-│   │   ├── receipt_service.js   # Cryptographic payment receipts & ZK nullifier validation
-│   │   └── settlement_keeper.js # Automated expiry monitoring & reserve payout keeper
-│   ├── tests/
-│   │   └── test-backend.js  # Deep automated test suite for all protocol subsystems
-│   ├── .env.example         # Template for environment variables and RPCs
-│   └── package.json
-└── contracts/
-    └── solana/
-        └── programs/astra/  # Anchor smart contract for Solana Devnet loss protection
-```
+This document provides step-by-step instructions for running, testing, and deploying **Astra Protocol** locally, on testnets, and in production.
 
 ---
 
-## 2. Prerequisites
+## 1. Quickstart
 
-* **Node.js**: `v18.0.0` or higher
-* **npm**: `v9.0.0` or higher
-* **Git**: Installed and configured
-* *(Optional for smart contract development)*: Rust `v1.75+` & Solana CLI `1.18+`
-
----
-
-## 3. Quickstart — Running Locally
-
-### Step 1: Install Backend Dependencies
+### Step 1: Install Dependencies
+From the repository root:
 ```bash
-cd backend
 npm install
 ```
 
-### Step 2: Configure Environment Variables
-Copy the template configuration in `backend/`:
+### Step 2: Configure Environment
+Copy the `.env.example` in `backend/` if you want custom RPCs or private keys:
 ```bash
-cp .env.example .env
+cp backend/.env.example backend/.env
 ```
 *(On Windows PowerShell)*:
 ```powershell
-Copy-Item .env.example .env
+Copy-Item backend/.env.example backend/.env
 ```
 
-Your `.env` already includes working Testnet configurations:
-* **Alchemy RPC Key**: Pre-configured for Arbitrum Sepolia (`https://arb-sepolia.g.alchemy.com`).
-* **Solana Testnet RPC**: Pre-configured for Solana Testnet (`https://api.testnet.solana.com`).
-* **Pyth / Douro Labs API**: High-throughput fixed-rate 1000ms institutional price stream.
-* **Solana & EVM Testnet Wallets**: Pre-generated testnet deployer addresses.
+> **Note**: Even without a `.env` file, the server runs with built-in public RPCs and fallback endpoints.
 
-### Step 3: Launch the Astra Protocol Daemon
+### Step 3: Start the Backend & Settlement Keeper
 ```bash
 npm start
 ```
-*Output:*
-```text
-[Astra Backend] Server active at http://localhost:4000
-[Astra Keeper] Multi-chain automated settlement keeper started.
-```
+* The API daemon listens on `http://localhost:4000`.
+* The automated multi-chain settlement keeper polls for expired positions every 30 seconds.
 
-### Step 4: Open in Your Browser
-* **Landing Page**: [http://localhost:4000/](http://localhost:4000/)
-* **Unified Web3 App**: [http://localhost:4000/app/](http://localhost:4000/app/)
-* **Developer Documentation & API Reference**: [http://localhost:4000/docs](http://localhost:4000/docs)
+### Step 4: Open the Applications
+* **Cinematic Landing Page**: [http://localhost:4000/](http://localhost:4000/)
+* **Unified Web3 Application**: [http://localhost:4000/app](http://localhost:4000/app)
+* **Developer Documentation Portal**: [http://localhost:4000/docs](http://localhost:4000/docs)
 
 ---
 
-## 4. Running the Deep Backend Test Suite
+## 2. Running Test Suites
 
-To thoroughly test all REST endpoints, oracle streams, dynamic quotation algebra, position settlement, ZK receipts, and username directories:
-
+### Comprehensive Backend Tests (24 Subsystem Tests)
+With the backend server running, execute:
 ```bash
-cd backend
 npm test
 ```
-All endpoints and services are validated end-to-end with zero mock failures.
+This runs `backend/scripts/test-all-backend.js` validating:
+1. Protocol Health & Multi-Chain Endpoints
+2. High-Throughput Pyth Douro Labs Candles
+3. Dynamic Non-Linear Quoting Engine
+4. Multi-Chain Position Lifecycle (`Create` -> `Settle` -> `Claim`)
+5. Protected Merchant Invoices & Receipt Verification
+6. ZK BN254 Pairing Proofs & Nullifier Checks
+7. Universal `@username` Registry
+8. Developer Portal & Documentation Routes
+9. Double-Claim Anti-Replay Defense
+10. Double-Payment Anti-Replay Defense
+11. Underwriting LP Reserve Pool & APY Calculations
+12. Handle Sanitization & Prototype Pollution Guards
+
+### Official Client SDK Tests
+```bash
+npm run test:sdk
+```
+Validates `@astra-protocol/sdk` methods (`getQuote`, `createPosition`, `settlePosition`, `claimPayout`, `createInvoice`, `payInvoice`, `registerUsername`).
+
+### Live Devnet Multi-Chain Connectivity
+```bash
+npm run test:devnet
+```
+Tests live RPC connectivity to Solana Devnet, Arbitrum Sepolia, and Hyperliquid Testnet APIs.
+
+---
+
+## 3. Testnet Deployments Reference
+
+| Chain | Network | Contract / Program | Identifier / Address |
+| :--- | :--- | :--- | :--- |
+| **Arbitrum** | Sepolia (421614) | `AstraProtectionEngine` | `0x732E212e3d745a8d6493e9aB065771dDeC0f9342` |
+| **Arbitrum** | Sepolia (421614) | `AstraReserveVault` | `0x7FdA9C1d8806495476cAa4871cB6fF663b8F1A04` |
+| **Arbitrum** | Sepolia (421614) | `AstraProtectedBalanceVault` | `0xCDF50aE966C65f3f62eE2eD53db83F6CDbab2619` |
+| **Arbitrum** | Sepolia (421614) | `AstraOracleAdapter` | `0xB1342904AcB57B803bea11a5B4691Dc8492EC433` |
+| **Arbitrum** | Sepolia (421614) | `AstraReceiptRegistry` | `0xF481bf304CA3F8624D6F6B135ABA811283B8494C` |
+| **Arbitrum** | Sepolia (421614) | `AstraUsernameRegistry` | `0xB90f861F38B31d726c660AEF12b7c0cb83b15c27` |
+| **Solana** | Testnet | Anchor Program ID | `ABMTT5W2UNn5BZG8285V9Uzn3h5c1G3rG7YeCPMn7714` |
+| **Solana** | Testnet | Protocol Authority | `GBoQWwa5SWsAFcRh1NQhWQ3Avmvwgsms6MmF2jg3Verk` |
+| **Hyperliquid** | Testnet | Clearing Engine | `0x732E212e3d745a8d6493e9aB065771dDeC0f9342` |
+
+---
+
+## 4. Re-Deploying Contracts or Generating Keys
+
+### Generate Fresh Deployer Keys
+To generate a new EVM deployer wallet and Solana keypair:
+```bash
+npm run setup:keys
+```
+
+### Run Testnet Deployment Script
+To re-anchor contracts and refresh `backend/config.js`:
+```bash
+npm run deploy:testnet
+```
 
 ---
 
 ## 5. Pushing to GitHub
 
-The repository is configured with a strict `.gitignore` to protect all private keys, `.env` files, build caches, and node modules.
+The repository is configured with a strict `.gitignore` to prevent committing sensitive keys or build artifacts.
 
-To push the project to your GitHub repository:
-
+To push changes to GitHub:
 ```bash
-# 1. Initialize Git repository
-git init
-
-# 2. Set default branch to main
-git branch -M main
-
-# 3. Add your remote origin
-git remote add origin <your-github-repo-url>
-
-# 4. Stage tracked files (.gitignore automatically excludes secrets)
 git add .
-
-# 5. Commit
-git commit -m "feat: complete Astra Protocol multi-chain loss protection engine"
-
-# 6. Push to GitHub
-git push -u origin main
+git commit -m "docs & cleanup: refine repository structure, remove obsolete files, update comprehensive README"
+git push origin main
 ```
-
-*(Note: If the remote repository already has an initial commit, use `git push -u origin main --force` or `git pull --rebase origin main` before pushing.)*
-
----
-
-## 6. Core Protocol API Endpoints
-
-| Method | Endpoint | Description |
-| :--- | :--- | :--- |
-| `GET` | `/api/v1/health` | Protocol status, active chains, and engine version |
-| `GET` | `/api/v1/quote` | Live dynamic quotation with Astra Protocol duration curve & reserve checks |
-| `GET` | `/api/v1/history?symbol=SOL` | High-throughput historical OHLCV candles from Douro Labs Pyth feed |
-| `POST` | `/api/v1/positions` | Create a protected position on Solana, Arbitrum, or Hyperliquid |
-| `POST` | `/api/v1/positions/:id/settle`| Settle position and trigger automated payout if market hit floor |
-| `POST` | `/api/v1/invoices` | Create a payment invoice with locked downside rate protection |
-| `POST` | `/api/v1/invoices/:id/pay` | Pay invoice with automated recipient balance protection |
-| `POST` | `/api/v1/receipts/verify` | Verify ZK cryptographic payment proof and nullifier |
-| `POST` | `/api/v1/usernames/register` | Register a universal `@handle` across all chains |
-| `GET` | `/api/v1/usernames/:handle` | Resolve a universal `@handle` to its wallet address |
-
----
-
-## 7. Smart Contracts Reference
-
-* **Solana Program**: [`contracts/solana/programs/astra/src/lib.rs`](file:///c:/Users/varda/Documents/CryptoTradeFair/Astra/contracts/solana/programs/astra/src/lib.rs)
-  * Implements `initialize_pool`, `deposit_reserve`, `create_position`, and `settle_position`.
-  * Deployed Program ID: `Astra111111111111111111111111111111111111111`
-* **Arbitrum EVM Vault**:
-  * Deployed Vault Address: `0x7890123456789012345678901234567890123456`
-* **Hyperliquid Bridge Clearing**:
-  * Deployed Clearing Address: `0x9876543210987654321098765432109876543210`

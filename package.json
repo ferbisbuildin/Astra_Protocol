@@ -6,7 +6,11 @@
   "type": "module",
   "scripts": {
     "start": "node backend/server.js",
-    "test": "node backend/scripts/test-all-backend.js"
+    "test": "node backend/scripts/test-all-backend.js",
+    "test:sdk": "node sdk/test-sdk.js",
+    "test:devnet": "node backend/scripts/test-devnet.js",
+    "deploy:testnet": "node backend/scripts/deploy-testnet.js",
+    "setup:keys": "node backend/scripts/setup-credentials.js"
   },
   "dependencies": {
     "@solana/web3.js": "^1.95.8",
