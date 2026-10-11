@@ -1,4 +1,4 @@
-# Astra Protocol SDK (`@astra/sdk`)
+# Astra Protocol SDK (`astra-protocol-sdk`)
 
 Official JavaScript & TypeScript client library for interacting with Astra Protocol across **Solana**, **Arbitrum One**, and **Hyperliquid (HyperEVM)**.
 
@@ -7,11 +7,11 @@ Official JavaScript & TypeScript client library for interacting with Astra Proto
 ## 📦 Installation
 
 ```bash
-npm install @astra/sdk
+npm install astra-protocol-sdk
 # or
-pnpm add @astra/sdk
+pnpm add astra-protocol-sdk
 # or
-yarn add @astra/sdk
+yarn add astra-protocol-sdk
 ```
 
 ---
@@ -19,7 +19,7 @@ yarn add @astra/sdk
 ## 🚀 Quickstart
 
 ```javascript
-import { AstraClient } from '@astra/sdk';
+import { AstraClient } from 'astra-protocol-sdk';
 
 // Initialize client
 const astra = new AstraClient({

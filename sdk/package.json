@@ -1,6 +1,6 @@
 {
-  "name": "@astra/sdk",
-  "version": "1.0.0",
+  "name": "astra-protocol-sdk",
+  "version": "1.0.1",
   "description": "Official Multi-Chain SDK for Astra Protocol (Solana, Arbitrum, Hyperliquid)",
   "main": "index.js",
   "types": "index.d.ts",
