@@ -14,6 +14,15 @@
   <script src="./astra-icons.bundle.js"></script>
 
   <style>
+    @font-face {
+      font-family: 'Dune Rise';
+      src: url('/assets/fonts/Dune_Rise.otf') format('opentype'),
+           url('/assets/fonts/Dune_Rise.ttf') format('truetype');
+      font-weight: normal;
+      font-style: normal;
+      font-display: swap;
+    }
+
     :root {
       --bg: #07070a;
       --card-bg: rgba(18, 18, 24, 0.75);
@@ -24,6 +33,128 @@
       --ink: #ffffff;
       --ink-muted: #9e9ea7;
       --code-bg: #0d0d14;
+    }
+
+    /* PRELOADER SCREEN */
+    .astra-preloader {
+      position: fixed;
+      inset: 0;
+      z-index: 99999;
+      background: #040407;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: opacity 0.5s cubic-bezier(0.16, 1, 0.3, 1), transform 0.5s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.5s ease;
+      overflow: hidden;
+    }
+    .astra-preloader.fade-out {
+      opacity: 0;
+      transform: scale(1.03);
+      visibility: hidden;
+      pointer-events: none;
+    }
+    .preloader-backdrop-glow {
+      position: absolute;
+      width: 520px;
+      height: 520px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(168, 85, 247, 0.28) 0%, rgba(139, 92, 246, 0.1) 40%, transparent 70%);
+      filter: blur(60px);
+      pointer-events: none;
+      animation: preloaderPulse 2.4s ease-in-out infinite alternate;
+    }
+    .preloader-content {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      padding: 24px;
+      z-index: 2;
+    }
+    .preloader-logo-wrapper {
+      position: relative;
+      width: 104px;
+      height: 104px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 20px;
+    }
+    .preloader-logo {
+      width: 82px;
+      height: 82px;
+      object-fit: contain;
+      filter: drop-shadow(0 0 24px rgba(192, 132, 252, 0.85));
+      animation: preloaderFloat 2.2s ease-in-out infinite alternate;
+    }
+    .preloader-ring {
+      position: absolute;
+      inset: -5px;
+      border-radius: 50%;
+      border: 1.5px solid transparent;
+      border-top-color: #c084fc;
+      border-right-color: rgba(168, 85, 247, 0.35);
+      animation: preloaderSpin 1.4s linear infinite;
+    }
+    .preloader-title {
+      font-family: 'Dune Rise', 'Plus Jakarta Sans', sans-serif;
+      font-size: 24px;
+      letter-spacing: 4px;
+      color: #ffffff;
+      margin-bottom: 6px;
+      text-shadow: 0 0 24px rgba(168, 85, 247, 0.7);
+    }
+    .preloader-subtitle {
+      font-size: 11.5px;
+      color: rgba(255, 255, 255, 0.55);
+      letter-spacing: 1.8px;
+      text-transform: uppercase;
+      margin-bottom: 24px;
+      font-weight: 500;
+    }
+    .preloader-bar {
+      width: 220px;
+      height: 3px;
+      background: rgba(255, 255, 255, 0.08);
+      border-radius: 99px;
+      overflow: hidden;
+      position: relative;
+      margin-bottom: 12px;
+    }
+    .preloader-progress {
+      position: absolute;
+      top: 0;
+      left: 0;
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, #9333ea, #c084fc, #f472b6);
+      border-radius: 99px;
+      box-shadow: 0 0 10px #c084fc;
+      animation: preloaderBar 1.1s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+    }
+    .preloader-status {
+      font-size: 11px;
+      color: #c084fc;
+      font-family: monospace;
+      letter-spacing: 1.2px;
+    }
+    @keyframes preloaderPulse {
+      from { transform: scale(0.9); opacity: 0.6; }
+      to   { transform: scale(1.2); opacity: 1; }
+    }
+    @keyframes preloaderFloat {
+      from { transform: translateY(0); }
+      to   { transform: translateY(-6px); }
+    }
+    @keyframes preloaderSpin {
+      to { transform: rotate(360deg); }
+    }
+    @keyframes preloaderBar {
+      0%   { width: 8%; }
+      40%  { width: 45%; }
+      75%  { width: 85%; }
+      100% { width: 100%; }
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -63,11 +194,24 @@
     }
 
     .brand-logo {
-      font-weight: 800;
-      font-size: 24px;
+      font-family: 'Dune Rise', 'Plus Jakarta Sans', sans-serif;
+      font-size: 20px;
+      letter-spacing: 2.2px;
       background: linear-gradient(135deg, #fff 0%, #c4b5fd 100%);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
+    }
+
+    .brand-logo-img {
+      height: 32px;
+      width: auto;
+      object-fit: contain;
+      filter: drop-shadow(0 0 12px rgba(168, 85, 247, 0.65));
+      transition: transform 0.25s ease;
+    }
+
+    .brand:hover .brand-logo-img {
+      transform: scale(1.08) rotate(3deg);
     }
 
     .nav-links {
@@ -328,19 +472,36 @@
 </head>
 
 <body>
+  <!-- ASTRA IMMERSIVE PRELOADER -->
+  <div id="astraPreloader" class="astra-preloader" aria-hidden="true">
+    <div class="preloader-backdrop-glow"></div>
+    <div class="preloader-content">
+      <div class="preloader-logo-wrapper">
+        <img src="/assets/AstraLogo.png" alt="Astra" class="preloader-logo">
+        <div class="preloader-ring"></div>
+      </div>
+      <div class="preloader-title">ASTRA</div>
+      <div class="preloader-subtitle">Developer Documentation &amp; Reference</div>
+      <div class="preloader-bar">
+        <div class="preloader-progress"></div>
+      </div>
+      <div class="preloader-status" id="preloaderStatus">LOADING SPECIFICATIONS...</div>
+    </div>
+  </div>
+
   <header class="docs-nav">
-    <a href="index.html" class="brand">
-      <span id="docsBrandIcon" style="display: inline-flex; align-items: center;"></span>
-      <span class="brand-logo">Astra</span>
-      <span style="font-size: 12px; color: var(--ink-muted); font-weight: 500;">/ Docs</span>
+    <a href="/" class="brand">
+      <img src="/assets/AstraLogo.png" alt="Astra Logo" class="brand-logo-img">
+      <span class="brand-logo">ASTRA</span>
+      <span style="font-size: 11px; color: var(--accent-purple); font-weight: 600; letter-spacing: 1px; padding: 2px 8px; border-radius: 99px; background: rgba(139,92,246,0.15); border: 1px solid rgba(139,92,246,0.3);">DOCS</span>
     </a>
 
     <div class="nav-links">
-      <a href="index.html">Overview</a>
-      <a href="app/index.html">Protection</a>
-      <a href="app/index.html?tab=positions">Positions</a>
-      <a href="app/index.html?tab=docs" class="active">API Sandbox</a>
-      <a href="app/index.html" class="btn-launch">Launch App →</a>
+      <a href="/">Overview</a>
+      <a href="/app">Protection</a>
+      <a href="/app?tab=positions">Positions</a>
+      <a href="/app?tab=docs" class="active">API Sandbox</a>
+      <a href="/app" class="btn-launch">Launch App →</a>
     </div>
   </header>
 
@@ -541,6 +702,33 @@ pub fn create_position(
     } else {
       initDocsIcons();
     }
+  </script>
+
+  <!-- PRELOADER DISMISSAL SCRIPT -->
+  <script>
+    (function () {
+      const preloader = document.getElementById('astraPreloader');
+      const status = document.getElementById('preloaderStatus');
+      if (!preloader) return;
+
+      function dismiss() {
+        if (!preloader || preloader.classList.contains('fade-out')) return;
+        if (status) status.textContent = 'DOCUMENTATION READY';
+        setTimeout(() => {
+          preloader.classList.add('fade-out');
+          setTimeout(() => {
+            if (preloader.parentNode) preloader.parentNode.removeChild(preloader);
+          }, 550);
+        }, 300);
+      }
+
+      if (document.readyState === 'complete') {
+        setTimeout(dismiss, 450);
+      } else {
+        window.addEventListener('load', () => setTimeout(dismiss, 350));
+        setTimeout(dismiss, 1200);
+      }
+    })();
   </script>
 </body>
 </html>

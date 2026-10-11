@@ -44,3 +44,4 @@ logs/
 
 # Local Reference Clones (Cloned third-party CoverFi sources)
 coverfi/
+*.zip

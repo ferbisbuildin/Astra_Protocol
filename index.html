@@ -12,6 +12,15 @@
 
   <style>
     @font-face {
+      font-family: 'Dune Rise';
+      src: url('/assets/fonts/Dune_Rise.otf') format('opentype'),
+           url('/assets/fonts/Dune_Rise.ttf') format('truetype');
+      font-weight: normal;
+      font-style: normal;
+      font-display: swap;
+    }
+
+    @font-face {
       font-family: 'PJS';
       src: local('Plus Jakarta Sans');
       font-display: block;
@@ -122,14 +131,27 @@
     }
 
     .logo {
-      font-weight: 800;
-      font-size: calc(26 * var(--u));
-      letter-spacing: calc(0.45 * var(--u));
+      font-family: 'Dune Rise', 'PJS', sans-serif;
+      font-size: calc(20 * var(--u));
+      letter-spacing: calc(2 * var(--u));
       transform: translateY(calc(-2.4 * var(--u)));
       line-height: 1;
       color: var(--ink);
       text-decoration: none;
       white-space: nowrap;
+      display: inline-flex;
+      align-items: center;
+      gap: calc(10 * var(--u));
+    }
+    .logo-img {
+      height: calc(32 * var(--u));
+      width: auto;
+      object-fit: contain;
+      filter: drop-shadow(0 0 12px rgba(168, 85, 247, 0.6));
+      transition: transform 0.25s ease;
+    }
+    .logo:hover .logo-img {
+      transform: scale(1.08) rotate(3deg);
     }
 
     .nav-links {
@@ -621,6 +643,126 @@
       .hero-inner {
         transform: translateY(-44%);
       }
+    /* PRELOADER SCREEN */
+    .astra-preloader {
+      position: fixed;
+      inset: 0;
+      z-index: 99999;
+      background: #040407;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: opacity 0.5s cubic-bezier(0.16, 1, 0.3, 1), transform 0.5s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.5s ease;
+      overflow: hidden;
+    }
+    .astra-preloader.fade-out {
+      opacity: 0;
+      transform: scale(1.03);
+      visibility: hidden;
+      pointer-events: none;
+    }
+    .preloader-backdrop-glow {
+      position: absolute;
+      width: 520px;
+      height: 520px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(168, 85, 247, 0.28) 0%, rgba(139, 92, 246, 0.1) 40%, transparent 70%);
+      filter: blur(60px);
+      pointer-events: none;
+      animation: preloaderPulse 2.4s ease-in-out infinite alternate;
+    }
+    .preloader-content {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      padding: 24px;
+      z-index: 2;
+    }
+    .preloader-logo-wrapper {
+      position: relative;
+      width: 104px;
+      height: 104px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 20px;
+    }
+    .preloader-logo {
+      width: 82px;
+      height: 82px;
+      object-fit: contain;
+      filter: drop-shadow(0 0 24px rgba(192, 132, 252, 0.85));
+      animation: preloaderFloat 2.2s ease-in-out infinite alternate;
+    }
+    .preloader-ring {
+      position: absolute;
+      inset: -5px;
+      border-radius: 50%;
+      border: 1.5px solid transparent;
+      border-top-color: #c084fc;
+      border-right-color: rgba(168, 85, 247, 0.35);
+      animation: preloaderSpin 1.4s linear infinite;
+    }
+    .preloader-title {
+      font-family: 'Dune Rise', 'PJS', sans-serif;
+      font-size: 24px;
+      letter-spacing: 4px;
+      color: #ffffff;
+      margin-bottom: 6px;
+      text-shadow: 0 0 24px rgba(168, 85, 247, 0.7);
+    }
+    .preloader-subtitle {
+      font-size: 11.5px;
+      color: rgba(255, 255, 255, 0.55);
+      letter-spacing: 1.8px;
+      text-transform: uppercase;
+      margin-bottom: 24px;
+      font-weight: 500;
+    }
+    .preloader-bar {
+      width: 220px;
+      height: 3px;
+      background: rgba(255, 255, 255, 0.08);
+      border-radius: 99px;
+      overflow: hidden;
+      position: relative;
+      margin-bottom: 12px;
+    }
+    .preloader-progress {
+      position: absolute;
+      top: 0;
+      left: 0;
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, #9333ea, #c084fc, #f472b6);
+      border-radius: 99px;
+      box-shadow: 0 0 10px #c084fc;
+      animation: preloaderBar 1.1s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+    }
+    .preloader-status {
+      font-size: 11px;
+      color: #c084fc;
+      font-family: monospace;
+      letter-spacing: 1.2px;
+    }
+    @keyframes preloaderPulse {
+      from { transform: scale(0.9); opacity: 0.6; }
+      to   { transform: scale(1.2); opacity: 1; }
+    }
+    @keyframes preloaderFloat {
+      from { transform: translateY(0); }
+      to   { transform: translateY(-6px); }
+    }
+    @keyframes preloaderSpin {
+      to { transform: rotate(360deg); }
+    }
+    @keyframes preloaderBar {
+      0%   { width: 8%; }
+      40%  { width: 45%; }
+      75%  { width: 85%; }
+      100% { width: 100%; }
     }
 
     /* ENTRANCE SEQUENCE */
@@ -830,6 +972,23 @@
 </head>
 
 <body>
+  <!-- ASTRA IMMERSIVE PRELOADER -->
+  <div id="astraPreloader" class="astra-preloader" aria-hidden="true">
+    <div class="preloader-backdrop-glow"></div>
+    <div class="preloader-content">
+      <div class="preloader-logo-wrapper">
+        <img src="/assets/AstraLogo.png" alt="Astra" class="preloader-logo">
+        <div class="preloader-ring"></div>
+      </div>
+      <div class="preloader-title">ASTRA</div>
+      <div class="preloader-subtitle">Multi-Chain Loss Protection Protocol</div>
+      <div class="preloader-bar">
+        <div class="preloader-progress"></div>
+      </div>
+      <div class="preloader-status" id="preloaderStatus">SYNCING PROTOCOL ORACLES...</div>
+    </div>
+  </div>
+
   <main class="hero">
     <!-- Looping Globe Background -->
     <div class="bg" role="img" aria-label="Stylised globe of Earth rendered as a purple dot matrix against a starfield, slowly rotating">
@@ -847,19 +1006,22 @@
 
     <!-- Top Navigation -->
     <header class="nav">
-      <a href="#" class="logo">Astra</a>
+      <a href="/" class="logo">
+        <img src="/assets/AstraLogo.png" alt="Astra Logo" class="logo-img">
+        <span>ASTRA</span>
+      </a>
 
       <nav class="nav-links" aria-label="Primary">
-        <a href="app/index.html">Protection</a>
-        <a href="app/index.html?tab=invoices">Invoices</a>
-        <a href="app/index.html?tab=positions">Positions</a>
-        <a href="app/index.html?tab=reserves">Reserves &amp; LP</a>
-        <a href="app/index.html?tab=docs">Docs &amp; API</a>
+        <a href="/app">Protection</a>
+        <a href="/app?tab=invoices">Invoices</a>
+        <a href="/app?tab=positions">Positions</a>
+        <a href="/app?tab=reserves">Reserves &amp; LP</a>
+        <a href="/docs">Docs &amp; API</a>
       </nav>
 
       <div class="nav-actions">
-        <a href="app/index.html" class="btn btn-login">Launch App</a>
-        <a href="app/index.html" class="btn btn-nav-start">
+        <a href="/app" class="btn btn-login">Launch App</a>
+        <a href="/app" class="btn btn-nav-start">
           <span>Get Started</span>
           <svg class="arw" viewBox="0 0 12 10" fill="none" aria-hidden="true">
             <path d="M0.8 5h10M7.1 1.4 10.9 5l-3.8 3.6" stroke="currentColor" stroke-width="1.35" stroke-linecap="round" stroke-linejoin="round"/>
@@ -874,14 +1036,14 @@
 
     <!-- Mobile Flyout Panel -->
     <nav class="menu" id="menu" aria-label="Mobile">
-      <a href="app/index.html">Protection</a>
-      <a href="app/index.html?tab=invoices">Invoices</a>
-      <a href="app/index.html?tab=positions">Positions</a>
-      <a href="app/index.html?tab=reserves">Reserves &amp; LP</a>
-      <a href="app/index.html?tab=docs">Docs &amp; API</a>
+      <a href="/app">Protection</a>
+      <a href="/app?tab=invoices">Invoices</a>
+      <a href="/app?tab=positions">Positions</a>
+      <a href="/app?tab=reserves">Reserves &amp; LP</a>
+      <a href="/docs">Docs &amp; API</a>
       <div class="divider"></div>
-      <a href="app/index.html">Launch App</a>
-      <a href="app/index.html" class="m-start">
+      <a href="/app">Launch App</a>
+      <a href="/app" class="m-start">
         <span>Get Started</span>
         <svg class="arw" viewBox="0 0 12 10" fill="none" aria-hidden="true">
           <path d="M0.8 5h10M7.1 1.4 10.9 5l-3.8 3.6" stroke="currentColor" stroke-width="1.35" stroke-linecap="round" stroke-linejoin="round"/>
@@ -901,13 +1063,13 @@
         and explore integrated DeFi loss-protection solutions.
       </p>
       <div class="ctas">
-        <a href="app/index.html" class="btn btn-lg btn-primary">
+        <a href="/app" class="btn btn-lg btn-primary">
           <span>Get Started</span>
           <svg class="arw" viewBox="0 0 12 10" fill="none" aria-hidden="true">
             <path d="M0.8 5h10M7.1 1.4 10.9 5l-3.8 3.6" stroke="currentColor" stroke-width="1.35" stroke-linecap="round" stroke-linejoin="round"/>
           </svg>
         </a>
-        <a href="app/index.html" class="btn btn-lg btn-ghost">
+        <a href="/app" class="btn btn-lg btn-ghost">
           <span>Launch App</span>
           <svg class="arw" viewBox="0 0 12 10" fill="none" aria-hidden="true">
             <path d="M0.8 5h10M7.1 1.4 10.9 5l-3.8 3.6" stroke="currentColor" stroke-width="1.35" stroke-linecap="round" stroke-linejoin="round"/>
@@ -1017,6 +1179,36 @@
 
       A.addEventListener('timeupdate', tick);
       B.addEventListener('timeupdate', tick);
+    })();
+  </script>
+
+  <!-- SCRIPT D: PRELOADER DISMISS -->
+  <script>
+    (function () {
+      var preloader = document.getElementById('astraPreloader');
+      var status = document.getElementById('preloaderStatus');
+      if (!preloader) return;
+
+      function dismiss() {
+        if (!preloader || preloader.classList.contains('fade-out')) return;
+        if (status) status.textContent = 'PROTOCOL READY';
+        setTimeout(function () {
+          preloader.classList.add('fade-out');
+          setTimeout(function () {
+            if (preloader.parentNode) preloader.parentNode.removeChild(preloader);
+          }, 550);
+        }, 320);
+      }
+
+      // Hide after window load or safety timeout (maximum 1100ms)
+      if (document.readyState === 'complete') {
+        setTimeout(dismiss, 400);
+      } else {
+        window.addEventListener('load', function () {
+          setTimeout(dismiss, 350);
+        });
+        setTimeout(dismiss, 1100);
+      }
     })();
   </script>
 </body>
