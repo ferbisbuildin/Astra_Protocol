@@ -280,10 +280,49 @@
       gap: 8px;
     }
 
+    .table-responsive {
+      width: 100%;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      margin: 16px 0;
+      border-radius: 12px;
+    }
+    .docs-table {
+      min-width: 520px;
+    }
+
     @media (max-width: 900px) {
-      .docs-container { grid-template-columns: 1fr; }
+      header.docs-nav {
+        height: auto;
+        min-height: 56px;
+        padding: 10px 16px;
+        flex-wrap: wrap;
+        gap: 8px;
+      }
+      .nav-links {
+        width: 100%;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: none;
+        padding-bottom: 4px;
+        gap: 12px;
+      }
+      .nav-links::-webkit-scrollbar {
+        display: none;
+      }
+      .docs-container { 
+        grid-template-columns: 1fr; 
+        padding: 0 16px 40px;
+      }
       .sidebar { display: none; }
       .feature-grid { grid-template-columns: 1fr; }
+      .docs-content {
+        padding: 20px 0;
+      }
+      pre {
+        padding: 14px 12px;
+        font-size: 11.5px;
+      }
     }
   </style>
 </head>
@@ -406,33 +445,35 @@ console.log('Position Active:', tx.positionId);</code></pre>
       <!-- Section: Smart Contracts -->
       <section id="contracts-arbitrum" class="doc-section">
         <h2 style="display: flex; align-items: center; gap: 10px;"><span id="netIconArb"></span><span>Arbitrum Nitro Contracts (Solidity 0.8.24)</span></h2>
-        <table class="docs-table">
-          <thead>
-            <tr><th>Contract</th><th>Role</th><th>Key Function</th></tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td><code>AstraProtectionEngine.sol</code></td>
-              <td>Core engine for Rate Lock &amp; Depeg Shields</td>
-              <td><code>createPosition(asset, amount, duration, floor)</code></td>
-            </tr>
-            <tr>
-              <td><code>AstraReserveVault.sol</code></td>
-              <td>USDC liquidity pool, LP share minting &amp; fee splits</td>
-              <td><code>depositUnderwritingCapital(amount)</code></td>
-            </tr>
-            <tr>
-              <td><code>AstraOracleAdapter.sol</code></td>
-              <td>Pyth Network &amp; Chainlink real-time feeds</td>
-              <td><code>getPrice(asset)</code></td>
-            </tr>
-            <tr>
-              <td><code>AstraReceiptRegistry.sol</code></td>
-              <td>Zero-knowledge receipt verification (BN254)</td>
-              <td><code>verifyReceipt(paymentHash, proof)</code></td>
-            </tr>
-          </tbody>
-        </table>
+        <div class="table-responsive">
+          <table class="docs-table">
+            <thead>
+              <tr><th>Contract</th><th>Role</th><th>Key Function</th></tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>AstraProtectionEngine.sol</code></td>
+                <td>Core engine for Rate Lock &amp; Depeg Shields</td>
+                <td><code>createPosition(asset, amount, duration, floor)</code></td>
+              </tr>
+              <tr>
+                <td><code>AstraReserveVault.sol</code></td>
+                <td>USDC liquidity pool, LP share minting &amp; fee splits</td>
+                <td><code>depositUnderwritingCapital(amount)</code></td>
+              </tr>
+              <tr>
+                <td><code>AstraOracleAdapter.sol</code></td>
+                <td>Pyth Network &amp; Chainlink real-time feeds</td>
+                <td><code>getPrice(asset)</code></td>
+              </tr>
+              <tr>
+                <td><code>AstraReceiptRegistry.sol</code></td>
+                <td>Zero-knowledge receipt verification (BN254)</td>
+                <td><code>verifyReceipt(paymentHash, proof)</code></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
       </section>
 
       <!-- Section: Solana Anchor -->

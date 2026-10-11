@@ -1151,6 +1151,222 @@
       color: var(--ink-muted);
       border: 1px solid rgba(255, 255, 255, 0.08);
     }
+
+    /* ==========================================================================
+       Comprehensive Mobile & Tablet Optimization System
+       ========================================================================== */
+
+    .table-responsive {
+      width: 100%;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      border-radius: 14px;
+      margin-top: 12px;
+    }
+
+    @media (max-width: 960px) {
+      header.app-nav {
+        height: auto;
+        min-height: 60px;
+        flex-wrap: wrap;
+        padding: 12px 16px;
+        gap: 10px;
+      }
+      .nav-brand {
+        order: 1;
+      }
+      .nav-actions {
+        order: 2;
+        margin-left: auto;
+        gap: 8px;
+      }
+      .oracle-status-pill {
+        display: none !important;
+      }
+      .btn-airdrop {
+        padding: 6px 10px;
+        font-size: 11px;
+      }
+      .btn-wallet-connect {
+        padding: 6px 12px;
+        font-size: 12px;
+      }
+      .nav-tabs {
+        order: 3;
+        width: 100%;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: none;
+        padding: 4px;
+        margin-top: 2px;
+      }
+      .nav-tabs::-webkit-scrollbar {
+        display: none;
+      }
+      .nav-tab-btn {
+        padding: 7px 12px;
+        font-size: 12px;
+        flex-shrink: 0;
+      }
+      .metrics-banner {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 12px;
+        margin-bottom: 24px;
+      }
+      .protection-grid {
+        grid-template-columns: 1fr;
+        gap: 18px;
+      }
+    }
+
+    @media (max-width: 640px) {
+      body {
+        font-size: 14px;
+      }
+      main.app-body {
+        margin: 14px auto 36px;
+        padding: 0 12px;
+      }
+      .card {
+        padding: 18px 14px;
+        border-radius: 18px;
+      }
+      .card-title {
+        font-size: 17px;
+      }
+      .card-subtitle {
+        font-size: 12px;
+        margin-bottom: 18px;
+      }
+      .mode-toggle-box {
+        max-width: 100%;
+        margin-bottom: 18px;
+      }
+      .mode-btn {
+        padding: 8px 10px;
+        font-size: 12px;
+      }
+      .input-box {
+        padding: 9px 12px;
+        gap: 8px;
+      }
+      .input-box input {
+        font-size: 14.5px;
+      }
+      .custom-asset-picker {
+        padding: 5px 8px;
+        font-size: 12px;
+      }
+      .duration-pills {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 6px;
+      }
+      .duration-pill {
+        padding: 8px 4px;
+        font-size: 12px;
+      }
+      .quote-box {
+        padding: 16px 14px;
+        border-radius: 14px;
+      }
+      .quote-row {
+        font-size: 12px;
+        margin-bottom: 8px;
+      }
+      .quote-row.highlight {
+        font-size: 13.5px;
+        padding-top: 10px;
+      }
+      .btn-action {
+        height: 46px;
+        font-size: 14px;
+        border-radius: 12px;
+      }
+      .chart-card {
+        padding: 14px 12px;
+        border-radius: 14px;
+      }
+      .chart-canvas {
+        height: 140px;
+      }
+      .donut-container {
+        flex-direction: column;
+        padding: 16px 12px;
+        gap: 14px;
+        border-radius: 14px;
+      }
+      .donut-canvas-box {
+        width: 120px;
+        height: 120px;
+      }
+      #reservesDonutCanvas {
+        width: 120px !important;
+        height: 120px !important;
+      }
+      .donut-legend {
+        width: 100%;
+      }
+      .positions-table {
+        min-width: 600px;
+      }
+      .positions-table th,
+      .positions-table td {
+        padding: 10px 12px;
+        font-size: 12px;
+      }
+      .api-endpoint-row {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+        padding: 10px 12px;
+      }
+      .btn-test-api {
+        width: 100%;
+        text-align: center;
+      }
+      .code-box {
+        padding: 12px;
+        font-size: 11px;
+      }
+      #toastContainer {
+        bottom: 12px;
+        right: 12px;
+        left: 12px;
+      }
+      .toast-msg {
+        min-width: unset;
+        width: 100%;
+        max-width: 100%;
+        padding: 12px 14px;
+        font-size: 12.5px;
+      }
+      .wallet-modal-card {
+        padding: 18px 14px;
+        border-radius: 18px;
+      }
+      .wallet-option-item {
+        padding: 10px 12px;
+      }
+    }
+
+    @media (max-width: 420px) {
+      .metrics-banner {
+        grid-template-columns: 1fr;
+        gap: 10px;
+      }
+      .metric-card {
+        padding: 12px 14px;
+      }
+      .metric-value {
+        font-size: 18px;
+      }
+      .brand-logo {
+        font-size: 20px;
+      }
+      .brand-badge {
+        display: none !important;
+      }
+    }
   </style>
 </head>
 
@@ -1495,50 +1711,30 @@
         <h2 class="card-title">Active Protection Positions</h2>
         <p class="card-subtitle">Monitor open positions, view settlement status, and execute claims.</p>
 
-        <table class="positions-table">
-          <thead>
-            <tr>
-              <th>ID</th>
-              <th>Protection Type</th>
-              <th>Asset &amp; Amount</th>
-              <th>Entry / Floor Price</th>
-              <th>Expiry</th>
-              <th>Status</th>
-              <th>Action</th>
-            </tr>
-          </thead>
-          <tbody id="positionsTableBody">
-            <tr id="pos-row-1042">
-              <td>#1042</td>
-              <td>Depeg Shield</td>
-              <td><div class="table-token-cell"><strong>5.00 SOL</strong></div></td>
-              <td>$108.49 / $95.00</td>
-              <td>In 24 Hours</td>
-              <td><span class="status-badge status-active" id="badge-1042">● Active</span></td>
-              <td><button class="btn-sm" style="background: rgba(255,255,255,0.08); color: #fff;" onclick="settlePosition(this, '1042')">Settle Position</button></td>
-            </tr>
-            <tr id="pos-row-1038">
-              <td>#1038</td>
-              <td>Rate Lock</td>
-              <td><div class="table-token-cell"><strong>1.50 ETH</strong></div></td>
-              <td>$2,469.25</td>
-              <td>Expired</td>
-              <td><span class="status-badge status-claimable" id="badge-1038">● Claimable</span></td>
-              <td>
-                <button class="btn-sm btn-claim" id="btn-claim-1038" onclick="claimPosition(this, '1038', 62.50)">Claim $62.50 Payout</button>
-              </td>
-            </tr>
-            <tr id="pos-row-1035">
-              <td>#1035</td>
-              <td>Depeg Shield</td>
-              <td><div class="table-token-cell"><strong>50.00 HYPE</strong></div></td>
-              <td>$44.00 / $40.00</td>
-              <td>In 7 Days</td>
-              <td><span class="status-badge status-active" id="badge-1035">● Active</span></td>
-              <td><button class="btn-sm" style="background: rgba(255,255,255,0.08); color: #fff;" onclick="settlePosition(this, '1035')">Settle Position</button></td>
-            </tr>
-          </tbody>
-        </table>
+        <div class="table-responsive">
+          <table class="positions-table">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Protection Type</th>
+                <th>Asset &amp; Amount</th>
+                <th>Entry / Floor Price</th>
+                <th>Expiry</th>
+                <th>Status</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody id="positionsTableBody">
+              <tr>
+                <td colspan="7" style="text-align: center; padding: 48px 16px; color: var(--ink-muted);">
+                  <div style="font-size: 28px; margin-bottom: 8px;">🛡️</div>
+                  <div style="font-weight: 600; color: #fff; font-size: 15px; margin-bottom: 4px;">No Open Protection Positions</div>
+                  <div style="font-size: 13px;">Create a position in the Protect panel to lock rates or set a depeg floor.</div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
       </div>
     </section>
 
