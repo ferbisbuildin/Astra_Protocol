@@ -7,11 +7,5 @@
     { "source": "/docs", "destination": "/docs.html" },
     { "source": "/developers", "destination": "/docs.html" },
     { "source": "/", "destination": "/index.html" }
-  ],
-  "crons": [
-    {
-      "path": "/api/cron/keeper",
-      "schedule": "*/5 * * * *"
-    }
   ]
 }
