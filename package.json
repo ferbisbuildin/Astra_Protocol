@@ -1,0 +1,21 @@
+{
+  "name": "astra-protocol",
+  "version": "1.0.1",
+  "description": "Astra Multi-Chain Protocol (Solana, Arbitrum One, Hyperliquid)",
+  "main": "api/index.js",
+  "type": "module",
+  "scripts": {
+    "start": "node backend/server.js",
+    "test": "node backend/scripts/test-all-backend.js"
+  },
+  "dependencies": {
+    "@solana/web3.js": "^1.95.8",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.7",
+    "ethers": "^6.13.5",
+    "express": "^4.21.2",
+    "express-rate-limit": "^8.7.1",
+    "helmet": "^8.3.0",
+    "thinking-orbs": "^0.3.2"
+  }
+}
