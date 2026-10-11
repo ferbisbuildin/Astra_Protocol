@@ -135,8 +135,9 @@
 
     .logo {
       font-family: 'Dune Rise', 'PJS', sans-serif;
-      font-size: calc(20 * var(--u));
-      letter-spacing: calc(2 * var(--u));
+      font-weight: 700;
+      font-size: calc(21 * var(--u));
+      letter-spacing: calc(2.4 * var(--u));
       transform: translateY(calc(-2.4 * var(--u)));
       line-height: 1;
       color: var(--ink);
@@ -145,6 +146,8 @@
       display: inline-flex;
       align-items: center;
       gap: calc(10 * var(--u));
+      -webkit-text-stroke: 0.5px #ffffff;
+      text-shadow: 0 0 16px rgba(168, 85, 247, 0.45);
     }
     .logo-img {
       height: calc(32 * var(--u));
